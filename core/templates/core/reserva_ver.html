@@ -1,0 +1,15 @@
+<h1>RESERVA_VER</h1>
+<div class="reserva">
+    <div class="localizador">ID: {{ reserva.id }}</div>
+    <div class="localizador">Localizador: {{ reserva.localizador }}</div>
+    <div class="operador">Operador: {{ reserva.operador }}</div>
+    <div class="fecha_inicio">Inicio: {{ reserva.fecha_inicio }}</div>
+</div>
+<br>
+<button type="button" onclick="location.href='{% url 'core:home' %}'">
+    Generar Incidencia
+</button>
+
+<button type="button" onclick="location.href='{% url 'core:home' %}'">
+    Volver al HOME
+</button>

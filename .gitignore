@@ -1,0 +1,60 @@
+# =========================================
+# Django / Python project .gitignore
+# (DB SQLite incluida en el repositorio)
+# =========================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*$py.class
+
+# --- Virtual environments ---
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# --- Django ---
+# Ignore collected static files (recreables)
+staticfiles/
+media/
+
+# --- VSCode / IDEs ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- Logs ---
+*.log
+*.pot
+*.pyc
+*.pyo
+*.orig
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Cache / Misc ---
+*.sqlite3-journal
+*.db-journal
+__MACOSX/
+*.bak
+*.swp
+*.tmp
+
+# --- Migrations (opcionales: mantenerlas si ya se generan) ---
+# Si no quieres subirlas, descomenta la siguiente línea:
+# */migrations/__pycache__/
+# */migrations/*.pyc
+
+# --- Node / frontend (si lo usas) ---
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log

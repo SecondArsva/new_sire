@@ -1,0 +1,22 @@
+<!-- Botón logout -->
+<div class="div_logout">
+  {% if user.is_authenticated %}
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit">Cerrar sesión</button>
+    </form>
+  {% endif %}
+</div>
+
+<!-- Buscador -->
+<form action="" method="post" class="buscador">
+  {% csrf_token %}
+  {{ form_buscar.localizador }}
+  {% if form_buscar.localizador.errors %}
+    <div class="errors">{{ form_buscar.localizador.errors }}</div>
+  {% endif %}
+  <button type="submit">Buscar</button>
+</form>
+
+<!-- Aquí van tus otros botones -->
+ 

@@ -1,0 +1,8 @@
+<h1>Nueva reserva</h1>
+<p><strong>Localizador:</strong> {{ localizador }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Crear y continuar</button>
+</form>
