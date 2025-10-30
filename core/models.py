@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.functions import Lower # case sensitive
+from django.conf import settings # Para pillar el usuario a través del auth
 
 # Create your models here.
 
@@ -103,8 +104,42 @@ class Hotel(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.ciudad.nombre})"
+
+#   ╔═════════════╗
+#   ║ Incidencias ║
+#   ╚═════════════╝
+# - reserva, un FK al registro de la reserva a la que corresponde.
+# - momento, CharField momento del viaje en eque se dio (pre, durante o post viaje)
+# - remitente, charfield (¿Quién llama?)
+# - via, charfield (via usada por el remitente para contactar)
+# - pagador, charfield (nombre original "extra_payment", ¿quién paga el pato? Empres, cliente, agencia o nadie)
+# - importe, no sé muy bien como definirlo. Es el importe a pagar de la devolución o compensación. El tema es que un compañero me ha dicho que use dos enteros, € y cents. Pero luego como lo mergeo? Lo pillo en el form con dos campos y luego formateo el importe correctamente?
+# - comentario, charfield max=1000, info del caso
+# - usuario, charfield pilla el nombre del usuario que rellenó el caso
+# - timestamp datetime automático
+class IncidenciaCamposComunes(models.Model):
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias",
+        verbose_name="Reserva",
+        db_index=True, # Revisa esto TODO
+    )
     
-class IncidenciaHotel(models.Model):
-    """Incidencias de hoteles disponibles en el sistema"""
-    hotel = models.ForeignKey(Hotel, on_delete=models.PROTECT)
-    incidencia = models.CharField()
+    
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_creadas",
+        verbose_name="Creado por"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creado")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado")
+    
+    class Meta:
+        abstract = True # Autodescriptivo ¯\_(ツ)_/¯
+        ordering = ["-created_at"]
+
+class IncidenciasHotel(IncidenciasCamposComunes):
+    hotel = models.ForeignKey()

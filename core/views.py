@@ -97,6 +97,9 @@ def reserva_crear(request, localizador: str):
         {"form": form, "localizador": localizador},
     )
 
+#   ╔═════════════╗
+#   ║ Incidencias ║
+#   ╚═════════════╝
 @login_required
 def incidencia_nueva_area(request): # Botones de selección en template.
     return render(request, "core/incidencia_nueva_area.html")
