@@ -1,6 +1,7 @@
 from django.contrib import admin
 # modelos
 from .models import Pais, Ciudad, Operador, Reserva
+from .models import Hotel
 
 # Register your models here.
 
@@ -19,3 +20,8 @@ class OperadorAdmin(admin.ModelAdmin):
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
     list_display = ('localizador', 'operador', 'fecha_inicio',)
+
+@admin.register(Hotel)
+class HotelAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'ciudad')
+    

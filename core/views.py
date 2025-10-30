@@ -27,9 +27,8 @@ def _clear_state(session):
     session.pop(SESSION_KEY, None)
     session.modified = True
 
-# LoDelNombre... ¯\_(ツ)_/¯
 @login_required
-def home(request):
+def home(request): # LoDelNombre... ¯\_(ツ)_/¯
     # Limpiamos el ession_state en caso de existir
     if _get_state(request.session):
         _clear_state(request.session)
@@ -98,23 +97,14 @@ def reserva_crear(request, localizador: str):
         {"form": form, "localizador": localizador},
     )
 
-
+@login_required
+def incidencia_nueva_area(request): # Botones de selección en template.
+    return render(request, "core/incidencia_nueva_area.html")
 
 @login_required
-def dict_reserva(request):
-    state = _get_state(request.session)
-
-#@login_required
-#def incidencia_seleccion_area(request): #TODO
-#    if request.method == "POST":
-#        form = IncidenciaAreaForm(request.POST)
-#        if form.is_valid():
-#            area = form.cleaned_data["area"]
-#            request.session["reporte_area"] = area  # guarda string ("HOTEL", etc.)
-#            request.session.modified = True
-#            return redirect("core:filler_spa")
-#    else:
-#        form = IncidenciaAreaForm()
-#
-#    return render(request, "core/incidencia_area.html", {"form": form})
-#
+def incidencia_nueva_hotel(request):
+    # estado
+    # POST formulario
+    # if oki, regist
+    # Not re-render
+    return render(request, "core/incidencia_nueva_hotel.html")

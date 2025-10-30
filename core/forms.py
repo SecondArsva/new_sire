@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm    # ╔═════
 from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
-from .models import Operador
+from .models import Operador, Hotel
 from django.core.validators import RegexValidator
 
 
@@ -84,14 +84,45 @@ class ReservaCrearForm(forms.Form):
 #   ╔═════════════╗
 #   ║ Incidencias ║
 #   ╚═════════════╝
-# tupla de pares (valor_interno, etiqueta_visible)
-AREAS_RELACIONADAS = [
-    ("HOTEL", "Hotel"),
-    ("OTROS", "Otros"),
-]
-class IncidenciaAreaForm(forms.Form):
-    area = forms.ChoiceField(
-        label="Área relacionada",
-        choices=AREAS_RELACIONADAS,
-        widget=forms.RadioSelect(attrs={"class": "segmented"}),
+class DatosComunesForm(forms.Form):
+    # momento
+    # remitente
+    # via
+    # causa
+    # extra_payment
+    # amount
+    importe_euros = forms.IntegerField(
+        label="Euros",
+        required=True,
+        max_value=5,
     )
+    importe_centimos = forms.IntegerField(
+        label="Centimos",
+        required=True,
+        max_value=2,
+    )
+    # commentary
+    comentario = forms.CharField(
+        label="Comentario",
+        max_length=2000,
+        required=True,
+        widget=forms.Textarea(attrs={
+            "placeholder": "Escribe aquí los detalles…",
+            "rows": 5,
+        }),
+    )
+
+#class IncidenciaHotelForm(forms.Form):
+#    hotel = forms.ModelChoiceField(
+#        queryset=Hotel.objects.none(),
+#        label="Hotel",
+#        required=True,
+#    )
+#    incidencia = forms.ModelChoiceField(
+#        
+#    )
+#
+#
+#    def __init__(self, *args, **kwargs):
+#        super().__init__(*args, **kwargs)
+#        self.fields["hotel"].queryset = Hotel.objects.all()

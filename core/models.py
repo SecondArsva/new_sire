@@ -76,3 +76,35 @@ class Reserva(models.Model):
 
     def __str__(self):
         return f"{self.localizador}"
+
+class Hotel(models.Model):
+    """Hoteles disponibles en el sistema"""
+    nombre = models.CharField(
+        max_length=100,
+        verbose_name="Hotel",
+    )
+    ciudad = models.ForeignKey(
+        Ciudad,
+        on_delete=models.PROTECT,
+        related_name="hoteles",
+        verbose_name="Ciudad",
+    )
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+
+    class Meta:
+        verbose_name = "Hotel"
+        verbose_name_plural = "Hoteles"
+        ordering = ["nombre"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["nombre", "ciudad"], name="unique_hotel_per_city"
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.nombre} ({self.ciudad.nombre})"
+    
+class IncidenciaHotel(models.Model):
+    """Incidencias de hoteles disponibles en el sistema"""
+    hotel = models.ForeignKey(Hotel, on_delete=models.PROTECT)
+    incidencia = models.CharField()
