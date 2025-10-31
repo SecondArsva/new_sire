@@ -6,10 +6,12 @@
     <div class="fecha_inicio">Inicio: {{ reserva.fecha_inicio }}</div>
 </div>
 <br>
-<button type="button" onclick="location.href='{% url 'core:incidencia_nueva_area' %}'">
+<button type="button" onclick="location.href='{% url 'core:incidencia_area' %}'">
     Generar Incidencia
 </button>
 
 <button type="button" onclick="location.href='{% url 'core:home' %}'">
     Volver al HOME
 </button>
+
+<h2>Mostrar incidencias relacionadas por área</h2>

@@ -1,17 +1,21 @@
 import re
 from django.shortcuts import render, redirect, get_object_or_404
 from typing import Any
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required # Autenticación
+from django.contrib import messages
 #FORMS
-from .forms import ReservaBuscarForm, ReservaCrearForm, IncidenciaAreaForm
+from .forms import ReservaBuscarForm, ReservaCrearForm
+from .forms import IncidenciaDemoForm
 #MODELS
 from .models import Reserva
+from .models import IncidenciaDemo
 
 # Create your views here.
 
 # Como meter datos mediante la URL es un mierdón, voy a usar un dict session_state
 # como de costumbre para la correcta recolección y paso de datos.
+# Helpers del session_state ---
 SESSION_KEY:str="dict_state"
 
 def _get_state(session) -> dict:
@@ -101,13 +105,57 @@ def reserva_crear(request, localizador: str):
 #   ║ Incidencias ║
 #   ╚═════════════╝
 @login_required
-def incidencia_nueva_area(request): # Botones de selección en template.
-    return render(request, "core/incidencia_nueva_area.html")
+def incidencia_area(request): # Botones de selección en template.
+    return render(request, "core/incidencia_area.html")
+
+FORM_STATE_KEY = "incidencia_demo"
+@login_required
+def incidencia_demo(request: HttpRequest) -> HttpResponse:
+    # 0) Pillamos el locata a través del session_state
+    state: dict = _get_state(request.session)
+    localizador = state.get("localizador")
+
+    # 1) Control de errores.
+    if not localizador:
+        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
+        return redirect("core:home")
+    
+    # 2) Búsqueda del registro de la reseva mediante el locata y si falla, error.
+    # Equivale a:
+    #       try:
+    #           reserva = Reserva.objects.get(localizador=localizador)
+    #       except Reserva.DoesNotExist:
+    #           raise Http404("Reserva no encontrada")
+    reserva = get_object_or_404(Reserva, localizador=localizador)
+
+    if request.method == "POST":
+        form = IncidenciaDemoForm(request.POST)
+        if form.is_valid():
+            # (Opcional) guarda una copia en sesión por si luego quieres reusar
+            _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
+
+            IncidenciaDemo.objects.create(
+                reserva=reserva,
+                created_by=request.user,
+                **form.cleaned_data,
+                # Como los campos del form y del model coinciden se pasan todos los
+                # valores a través del desempaquetado de **kwargs en Python.
+            )
+            print("Incidencia demo creada.")
+            messages.success(request, "Incidencia demo creada.")
+            # si quieres limpiar los datos del form en sesión tras crear:
+            _set_state(request.session, SESSION_KEY, {})
+            return redirect("core:incidencia_demo")
+    else:
+        # prefill desde sesión (opcional)
+        initial = state.get(FORM_STATE_KEY, {})
+        form = IncidenciaDemoForm(initial=initial)
+    context = {
+        "reserva": reserva,
+        "form": form,
+    }
+    return render(request, "core/incidencia_demo.html", context)
 
 @login_required
-def incidencia_nueva_hotel(request):
-    # estado
-    # POST formulario
-    # if oki, regist
-    # Not re-render
-    return render(request, "core/incidencia_nueva_hotel.html")
+def incidencia_guia(request):
+    pass

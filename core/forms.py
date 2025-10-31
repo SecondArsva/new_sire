@@ -6,8 +6,8 @@ from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
 from .models import Operador, Hotel
+from .models import Momento, Remitente, ViaContacto, Pagador
 from django.core.validators import RegexValidator
-
 
 #   ╔══════╗
 #   ║ AUTH ║
@@ -84,45 +84,43 @@ class ReservaCrearForm(forms.Form):
 #   ╔═════════════╗
 #   ║ Incidencias ║
 #   ╚═════════════╝
-class DatosComunesForm(forms.Form):
-    # momento
-    # remitente
-    # via
-    # causa
-    # extra_payment
-    # amount
-    importe_euros = forms.IntegerField(
-        label="Euros",
+class IncidenciasCamposComunesForm(forms.Form):
+    """Formulario de captura de datos para los campos comunes que ha de introducir el usuario"""
+    momento = forms.ChoiceField(
+        label="Momento del viaje",
+        choices=[("", "---------")] + list(Momento.choices),
         required=True,
-        max_value=5,
     )
-    importe_centimos = forms.IntegerField(
-        label="Centimos",
+    remitente = forms.ChoiceField(
+        label="Remitente",
+        choices=[("", "---------")] + list(Remitente.choices),
         required=True,
-        max_value=2,
     )
-    # commentary
+    via = forms.ChoiceField(
+        label="Vía de contacto",
+        choices=[("", "---------")] + list(ViaContacto.choices),
+        required=True,
+    )
+    pagador = forms.ChoiceField(
+        label="Pagador",
+        choices=[("", "---------")] + list(Pagador.choices),
+        required=True,
+    )
+    importe = forms.DecimalField(
+        label="Importe (€)",
+        min_value=0,
+        max_digits=10,
+        decimal_places=2,
+        initial=0,
+        help_text="Importe económico si aplica"
+    )
     comentario = forms.CharField(
         label="Comentario",
-        max_length=2000,
+        widget=forms.Textarea(attrs={"rows":7}),
         required=True,
-        widget=forms.Textarea(attrs={
-            "placeholder": "Escribe aquí los detalles…",
-            "rows": 5,
-        }),
+        max_length=500,
     )
 
-#class IncidenciaHotelForm(forms.Form):
-#    hotel = forms.ModelChoiceField(
-#        queryset=Hotel.objects.none(),
-#        label="Hotel",
-#        required=True,
-#    )
-#    incidencia = forms.ModelChoiceField(
-#        
-#    )
-#
-#
-#    def __init__(self, *args, **kwargs):
-#        super().__init__(*args, **kwargs)
-#        self.fields["hotel"].queryset = Hotel.objects.all()
+class IncidenciaDemoForm(IncidenciasCamposComunesForm):
+    """Demostración de la herencia, sin campos añadidos.""" # Celia Juver Cruz'nt lol
+    pass
