@@ -5,8 +5,9 @@ from django.contrib.auth.forms import AuthenticationForm    # ╔═════
 from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
-from .models import Operador, Hotel
+from .models import Operador, Hotel, Guia
 from .models import Momento, Remitente, ViaContacto, Pagador
+from .models import IncidenciaGuia
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -84,7 +85,7 @@ class ReservaCrearForm(forms.Form):
 #   ╔═════════════╗
 #   ║ Incidencias ║
 #   ╚═════════════╝
-class IncidenciasCamposComunesForm(forms.Form):
+class IncidenciaCamposComunesForm(forms.Form):
     """Formulario de captura de datos para los campos comunes que ha de introducir el usuario"""
     momento = forms.ChoiceField(
         label="Momento del viaje",
@@ -121,6 +122,31 @@ class IncidenciasCamposComunesForm(forms.Form):
         max_length=500,
     )
 
-class IncidenciaDemoForm(IncidenciasCamposComunesForm):
+class IncidenciaDemoForm(IncidenciaCamposComunesForm):
     """Demostración de la herencia, sin campos añadidos.""" # Celia Juver Cruz'nt lol
     pass
+
+class IncidenciaGuiaForm(IncidenciaCamposComunesForm):
+    """Formulario para las incidencias relacionadas a los guías."""
+    guia = forms.ModelChoiceField(
+        queryset=Guia.objects.none(),
+        label="Guía",
+        required=True,
+        empty_label="Selecciona un guía",)
+    personal = forms.BooleanField(label="PERSONAL", required=False, initial=False)
+    gestion = forms.BooleanField(label="GESTIÓN", required=False, initial=False)
+    conocimiento = forms.BooleanField(label="CONOCIMIENTO", required=False, initial=False)
+    idioma = forms.BooleanField(label="IDIOMA", required=False, initial=False)
+    radio = forms.BooleanField(label="RADIO (Whisper)", required=False, initial=False)
+    otro = forms.BooleanField(label="OTRO", required=False, initial=False)
+
+    # Personalización del orden en que se renderizan los campos. Primero los de guía, luego los comunes.
+    field_order = [
+        "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
+        "momento", "remitente", "via", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["guia"].queryset = Guia.objects.filter(is_active=True).order_by("nombre")
+        self.order_fields(self.field_order)  # asegura el orden

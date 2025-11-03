@@ -6,16 +6,22 @@ from django.contrib.auth.decorators import login_required # Autenticación
 from django.contrib import messages
 #FORMS
 from .forms import ReservaBuscarForm, ReservaCrearForm
-from .forms import IncidenciaDemoForm
+from .forms import IncidenciaDemoForm, IncidenciaGuiaForm
 #MODELS
 from .models import Reserva
-from .models import IncidenciaDemo
+from .models import IncidenciaDemo, IncidenciaGuia
+# Para el handler jsonable
+from decimal import Decimal
+from django.db.models import Model
+from datetime import date, datetime
 
 # Create your views here.
 
 # Como meter datos mediante la URL es un mierdón, voy a usar un dict session_state
 # como de costumbre para la correcta recolección y paso de datos.
-# Helpers del session_state ---
+#   ╔═══════════════════════╗
+#   ║ Session_state helpers ║
+#   ╚═══════════════════════╝
 SESSION_KEY:str="dict_state"
 
 def _get_state(session) -> dict:
@@ -23,7 +29,7 @@ def _get_state(session) -> dict:
 
 def _set_state(session, key: str, value):
     state = _get_state(session)
-    state[key] = value
+    state[key] = _make_jsonable(value)
     session[SESSION_KEY] = state
     session.modified = True
 
@@ -31,9 +37,55 @@ def _clear_state(session):
     session.pop(SESSION_KEY, None)
     session.modified = True
 
+#   ╔═════════════════════════╗
+#   ║ Hadlers para serializar ║
+#   ╚═════════════════════════╝
+def _jsonable(value):
+    # Model → guardar solo la PK
+    if isinstance(value, Model):
+        return value.pk
+    # Decimal → str para no perder precisión
+    if isinstance(value, Decimal):
+        return str(value)
+    # fechas → ISO 8601
+    if isinstance(value, (date, datetime)):
+        return value.isoformat()
+    # sets → lista
+    if isinstance(value, set):
+        return list(value)
+    return value
+
+def _make_jsonable(obj):
+    if isinstance(obj, dict):
+        return {k: _make_jsonable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_make_jsonable(v) for v in obj]
+    return _jsonable(obj)
+
+# --- NUEVO: lectura con casteo por-clave ---
+def _get_state_key(session, key: str, cast_map: dict | None = None) -> dict:
+    """
+    Devuelve state[key]. Si pasas cast_map, aplica conversión por campo.
+    Ej: cast_map = {"importe": Decimal}
+    """
+    data = _get_state(session).get(key, {})
+    if not cast_map:
+        return data
+    out = {}
+    for k, v in data.items():
+        caster = cast_map.get(k)
+        try:
+            out[k] = caster(v) if caster else v
+        except Exception:
+            out[k] = v
+    return out
+
+#   ╔════════╗
+#   ║ Vistas ║
+#   ╚════════╝
 @login_required
 def home(request): # LoDelNombre... ¯\_(ツ)_/¯
-    # Limpiamos el ession_state en caso de existir
+    # Limpiamos el session_state en caso de existir
     if _get_state(request.session):
         _clear_state(request.session)
         print("HOME: Session_state existente detectado: Contenido Eliminado")
@@ -119,7 +171,7 @@ def incidencia_demo(request: HttpRequest) -> HttpResponse:
     if not localizador:
         print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
         return redirect("core:home")
-    
+
     # 2) Búsqueda del registro de la reseva mediante el locata y si falla, error.
     # Equivale a:
     #       try:
@@ -137,11 +189,11 @@ def incidencia_demo(request: HttpRequest) -> HttpResponse:
             IncidenciaDemo.objects.create(
                 reserva=reserva,
                 created_by=request.user,
-                **form.cleaned_data,
                 # Como los campos del form y del model coinciden se pasan todos los
                 # valores a través del desempaquetado de **kwargs en Python.
+                **form.cleaned_data,
             )
-            print("Incidencia demo creada.")
+            print("Incidencia DEMO creada.")
             messages.success(request, "Incidencia demo creada.")
             # si quieres limpiar los datos del form en sesión tras crear:
             _set_state(request.session, SESSION_KEY, {})
@@ -156,6 +208,76 @@ def incidencia_demo(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "core/incidencia_demo.html", context)
 
+FORM_STATE_KEY = "incidencia_guia"
 @login_required
-def incidencia_guia(request):
-    pass
+def incidencia_guia(request: HttpRequest) -> HttpResponse:
+    state: dict = _get_state(request.session)
+    localizador = state.get("localizador")
+
+    if not localizador:
+        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
+        return redirect("core:home")
+    else:
+        print(f"LOCATA EXISTE: {localizador}")
+
+    reserva = get_object_or_404(Reserva, localizador=localizador)
+
+    if request.method == "POST":
+        form = IncidenciaGuiaForm(request.POST)
+        if form.is_valid():
+            _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
+            IncidenciaGuia.objects.create(
+                reserva=reserva,
+                created_by=request.user,
+                **form.cleaned_data,
+            )
+            print("Incidencia GUIA creada.")
+            _set_state(request.session, SESSION_KEY, {})
+            return redirect("core:home")
+    else:
+        initial = state.get(FORM_STATE_KEY, {})
+        form = IncidenciaGuiaForm(initial=initial)
+    context = {
+        "reserva": reserva,
+        "form": form,
+    }
+    return render(request, "core/incidencia_guia.html", context)
+
+#FORM_STATE_KEY = "incidencia_guia"
+#@login_required
+#def incidencia_guia(request: HttpRequest) -> HttpResponse:
+#    state: dict = _get_state(request.session)
+#    localizador = state.get("localizador")
+#
+#    if not localizador:
+#        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
+#        return redirect("core:home")
+#
+#    reserva = get_object_or_404(Reserva, localizador=localizador)
+#
+#    if request.method == "POST":
+#        form = IncidenciaGuiaForm(request.POST)
+#        if form.is_valid():
+#            # 1) Persistes la incidencia en DB con los tipos “reales”
+#            IncidenciaGuia.objects.create(
+#                reserva=reserva,
+#                created_by=request.user,
+#                **form.cleaned_data,
+#            )
+#
+#            # 2) Guardas el paso en sesión (tu serializer ya convierte Model→pk, Decimal→str, etc.)
+#            _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
+#
+#            print("Incidencia GUIA creada.")
+#            # 3) Si quieres vaciar todo el wizard, usa el clear correcto:
+#            _clear_state(request.session)
+#
+#            return redirect("core:incidencia_guia")  # o el siguiente paso que toque
+#    else:
+#        # Para iniciales NO necesitas deserializar: pk y str funcionan bien en el form.
+#        initial = state.get(FORM_STATE_KEY, {})
+#        form = IncidenciaGuiaForm(initial=initial)
+#
+#    context = {"reserva": reserva, "form": form}
+#    return render(request, "core/incidencia_guia.html", context)
+#

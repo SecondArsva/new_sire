@@ -108,7 +108,8 @@ class Hotel(models.Model):
 class Guia(models.Model):
     nombre = models.CharField(max_length=50, verbose_name="Nombre")
     apellido1 = models.CharField(max_length=50, verbose_name="Primer Apellido")
-    apellido2 = models.CharField(max_length=50, verbose_name="Segundo Apellido")
+    apellido2 = models.CharField(max_length=50, verbose_name="Segundo Apellido",
+                                 blank=True, default="")
     is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
@@ -117,7 +118,8 @@ class Guia(models.Model):
         ordering = ["nombre"]
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido1} {self.apellido2}" if self.apellido2 else f"{self.nombre} {self.apellido1}"
+        return f"{self.nombre} {self.apellido1} {self.apellido2}".strip()
+
 
 #   ╔═════════════╗
 #   ║ Incidencias ║
@@ -167,9 +169,9 @@ class IncidenciaCamposComunes(models.Model):
     reserva = models.ForeignKey(
         Reserva,
         on_delete=models.PROTECT,
-        related_name="incidencias",
+        related_name="%(class)ss",   # genérico para no chocar; no lo usarás en código
         verbose_name="Reserva",
-        db_index=True, # Revisa esto TODO
+        db_index=True,
     )
 
     momento = models.CharField(
@@ -212,8 +214,8 @@ class IncidenciaCamposComunes(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
-        related_name="incidencias_creadas",
-        verbose_name="Creado por"
+        related_name="%(class)s_creadas",
+        verbose_name="Creado por",
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creado")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado")
@@ -230,3 +232,33 @@ class IncidenciaDemo(IncidenciaCamposComunes):
     class Meta:
         verbose_name = "Incidencia (demo)"
         verbose_name_plural = "Incidencias (demo)"
+
+class IncidenciaGuia(IncidenciaCamposComunes):
+    # Sobreescritura de campos en los hijos para evitar
+    # incompatibilidades con el related_name heredado.
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_guia",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_guia_creadas",
+        verbose_name="Creado por"
+    )
+    # Campos propios de los guías.
+    guia = models.ForeignKey(Guia, on_delete=models.PROTECT)
+    # Tipos de incidencia
+    personal = models.BooleanField(default=False)
+    gestion = models.BooleanField(default=False)
+    conocimiento = models.BooleanField(default=False)
+    idioma = models.BooleanField(default=False)
+    radio = models.BooleanField(default=False) # El Whisper
+    otro = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Incidencia (guía)"
+        verbose_name_plural = "Incidencias (guías)"
+        ordering = ["-created_at"]
