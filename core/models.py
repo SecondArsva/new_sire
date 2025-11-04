@@ -264,7 +264,7 @@ class IncidenciaGuia(IncidenciaCamposComunes):
         ordering = ["-created_at"]
 
 class Basico(models.Model):
-    nombre = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=25, unique=True,)
 
     class Meta:
         verbose_name = "Sector básico"
@@ -273,7 +273,7 @@ class Basico(models.Model):
 
     def __str__(self):
         return f"{self.nombre}"
-    
+
 class IncidenciaTransporte(IncidenciaCamposComunes):
     # Sobreescritura del padre
     reserva = models.ForeignKey(
@@ -290,13 +290,24 @@ class IncidenciaTransporte(IncidenciaCamposComunes):
     )
     # Campos de Transporte
     basico = models.ForeignKey(Basico, on_delete=models.PROTECT)
-    de = models.ForeignKey(Pais, on_delete=models.PROTECT)  # FROM
-    a = models.ForeignKey(Pais, on_delete=models.PROTECT)   # TO
+    origen = models.ForeignKey( # FROM
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de origen",
+        related_name="incidencias_transporte_origen",
+    )
+    destino = models.ForeignKey( # TO
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de destino",
+        related_name="incidencias_transporte_destino",
+    )
     # Tipos de incidencia
     conductor = models.BooleanField(default=False)
     averia = models.BooleanField(default=False)
     equipaje = models.BooleanField(default=False)
     accidente = models.BooleanField(default=False)
+    otro = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Incidencia (transporte)"

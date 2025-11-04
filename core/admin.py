@@ -1,9 +1,9 @@
 from django.contrib import admin
 # modelos
 from .models import Pais, Ciudad
-from .models import Operador, Reserva
+from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
-from .models import IncidenciaDemo, IncidenciaGuia
+from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte
 
 # Register your models here.
 
@@ -43,3 +43,14 @@ class IncidenciaGuiaAdmin(admin.ModelAdmin):
     list_display=('reserva',
                   "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
                   'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',)
+    
+@admin.register(IncidenciaTransporte)
+class IncidenciaTransporteAdmin(admin.ModelAdmin):
+    list_display=('reserva',
+                  "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
+                  'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',)
+    
+@admin.register(Basico)
+class BasicoAdmin(admin.ModelAdmin):
+    list_display = ('nombre',)
+    ordering = ["nombre"]
