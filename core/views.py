@@ -208,9 +208,44 @@ def incidencia_demo(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "core/incidencia_demo.html", context)
 
+#FORM_STATE_KEY = "incidencia_guia"
+#@login_required
+#def incidencia_guia(request: HttpRequest) -> HttpResponse:
+#    state: dict = _get_state(request.session)
+#    localizador = state.get("localizador")
+#
+#    if not localizador:
+#        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
+#        return redirect("core:home")
+#    else:
+#        print(f"LOCATA EXISTE: {localizador}")
+#
+#    reserva = get_object_or_404(Reserva, localizador=localizador)
+#
+#    if request.method == "POST":
+#        form = IncidenciaGuiaForm(request.POST)
+#        if form.is_valid():
+#            _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
+#            IncidenciaGuia.objects.create(
+#                reserva=reserva,
+#                created_by=request.user,
+#                **form.cleaned_data,
+#            )
+#            print("Incidencia GUIA creada.")
+#            _set_state(request.session, SESSION_KEY, {})
+#            return redirect("core:home")
+#    else:
+#        initial = state.get(FORM_STATE_KEY, {})
+#        form = IncidenciaGuiaForm(initial=initial)
+#    context = {
+#        "reserva": reserva,
+#        "form": form,
+#    }
+#    return render(request, "core/incidencia_guia.html", context)
+
 FORM_STATE_KEY = "incidencia_guia"
 @login_required
-def incidencia_guia(request: HttpRequest) -> HttpResponse:
+def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
     state: dict = _get_state(request.session)
     localizador = state.get("localizador")
 
@@ -222,11 +257,20 @@ def incidencia_guia(request: HttpRequest) -> HttpResponse:
 
     reserva = get_object_or_404(Reserva, localizador=localizador)
 
+    # Mapeo de tipos a forms y modelos
+    FORM_MAP = {
+        "guia": (IncidenciaGuiaForm, IncidenciaGuia, "Incidencia Guía"),
+    }
+    if tipo not in FORM_MAP:
+        print(f"Tipo no valido: {tipo}")
+        return redirect("core:home")
+    FormClass, ModelClass, title = FORM_MAP[tipo]
+
     if request.method == "POST":
-        form = IncidenciaGuiaForm(request.POST)
+        form = FormClass(request.POST)
         if form.is_valid():
             _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
-            IncidenciaGuia.objects.create(
+            ModelClass.objects.create(
                 reserva=reserva,
                 created_by=request.user,
                 **form.cleaned_data,
@@ -236,48 +280,10 @@ def incidencia_guia(request: HttpRequest) -> HttpResponse:
             return redirect("core:home")
     else:
         initial = state.get(FORM_STATE_KEY, {})
-        form = IncidenciaGuiaForm(initial=initial)
+        form = FormClass(initial=initial)
     context = {
         "reserva": reserva,
         "form": form,
+        "title": title,
     }
-    return render(request, "core/incidencia_guia.html", context)
-
-#FORM_STATE_KEY = "incidencia_guia"
-#@login_required
-#def incidencia_guia(request: HttpRequest) -> HttpResponse:
-#    state: dict = _get_state(request.session)
-#    localizador = state.get("localizador")
-#
-#    if not localizador:
-#        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
-#        return redirect("core:home")
-#
-#    reserva = get_object_or_404(Reserva, localizador=localizador)
-#
-#    if request.method == "POST":
-#        form = IncidenciaGuiaForm(request.POST)
-#        if form.is_valid():
-#            # 1) Persistes la incidencia en DB con los tipos “reales”
-#            IncidenciaGuia.objects.create(
-#                reserva=reserva,
-#                created_by=request.user,
-#                **form.cleaned_data,
-#            )
-#
-#            # 2) Guardas el paso en sesión (tu serializer ya convierte Model→pk, Decimal→str, etc.)
-#            _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
-#
-#            print("Incidencia GUIA creada.")
-#            # 3) Si quieres vaciar todo el wizard, usa el clear correcto:
-#            _clear_state(request.session)
-#
-#            return redirect("core:incidencia_guia")  # o el siguiente paso que toque
-#    else:
-#        # Para iniciales NO necesitas deserializar: pk y str funcionan bien en el form.
-#        initial = state.get(FORM_STATE_KEY, {})
-#        form = IncidenciaGuiaForm(initial=initial)
-#
-#    context = {"reserva": reserva, "form": form}
-#    return render(request, "core/incidencia_guia.html", context)
-#
+    return render(request, "core/incidencia_tipo.html", context)

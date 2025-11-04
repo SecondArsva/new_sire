@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm    # ╔═════
 from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
-from .models import Operador, Hotel, Guia
+from .models import Operador, Hotel, Guia, Ciudad
 from .models import Momento, Remitente, ViaContacto, Pagador
 from .models import IncidenciaGuia
 from django.core.validators import RegexValidator
@@ -150,3 +150,11 @@ class IncidenciaGuiaForm(IncidenciaCamposComunesForm):
         super().__init__(*args, **kwargs)
         self.fields["guia"].queryset = Guia.objects.filter(is_active=True).order_by("nombre")
         self.order_fields(self.field_order)  # asegura el orden
+
+class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
+    basico = forms.ModelChoiceField(queryset=Basico.objects.none())
+    de = forms.ModelChoiceField(queryset=Ciudad.objects.none())
+    a = forms.ModelChoiceField(queryset=Ciudad.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
