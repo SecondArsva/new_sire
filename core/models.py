@@ -314,3 +314,88 @@ class IncidenciaTransporte(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (transportes)"
         ordering = ["-created_at"]
 
+class IncidenciaHotel(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_hotel",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_hotel_creadas",
+        verbose_name="Creado por"
+    )
+    # Campos de Hotel
+    hotel = models.ForeignKey(Hotel, on_delete=models.PROTECT)
+    # Tipos de incidencia
+    # ROOM
+    room_key = models.BooleanField(default=False)
+    room_clean = models.BooleanField(default=False)
+    room_size = models.BooleanField(default=False)
+    room_bed_type = models.BooleanField(default=False)
+    room_facility = models.BooleanField(default=False)
+    room_amenity = models.BooleanField(default=False)
+    room_maintenance = models.BooleanField(default=False)
+    # RESTAURANTE
+    restaurant_personal = models.BooleanField(default=False)
+    restaurant_quantity = models.BooleanField(default=False)
+    restaurant_quality = models.BooleanField(default=False)
+    # RESERVA
+    reserve_non_booking = models.BooleanField(default=False)
+    reserve_city_tax = models.BooleanField(default=False)
+    reserve_location = models.BooleanField(default=False)
+    # OTROS
+    other_personal = models.BooleanField(default=False)
+    other_lobby_size = models.BooleanField(default=False)
+
+    causa = models.CharField(
+        max_length=3,
+        choices=[
+            ("HTL", "Error Hotel"),
+            ("EMV", "Error EMV"),
+            ("UNK", "Desconocido"),
+        ],
+        verbose_name="Causa (Hotel)",
+        db_index=True,
+    )
+
+    class Meta:
+        verbose_name = "Incidencia (hotel)"
+        verbose_name_plural = "Incidencias (hotel)"
+        ordering = ["-created_at"]
+
+
+#class PutoTransferista(models.TextChoices):
+#    APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
+#    HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
+#
+#    TER_HTL = "TER/HTL", "Terminal de buses / Hotel"
+#    HTL_TER = "HTL/TER", "Hotel / Terminal de buses"
+#    
+#    HTL_HTL = "HTL/HTL", "Hotel / Hotel"
+#    
+#    STN_HTL = "STN/HTL", "Estación de tren / Hotel"
+#    HTL_STN = "HTL/STN", "Hotel / Estación de tren"
+#    
+#    PRT_HTL = "PRT/HTL", "Puerto marítimo / Hotel"
+#    HTL_PRT = "HTL/PRT", "Hotel / Puerto marítimo"
+#
+#class IncidenciaTransferista(IncidenciaCamposComunes):
+#    # fecha???
+#    ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
+#    punto = models.CharField(
+#        max_length=5,
+#        choices=PutoTransferista.choices,
+#        verbose_name="Punto del transfer",
+#        db_index=True, # Revisa esto TODO
+#    )
+#    incidencia = models.CharField(
+#        max_length=
+#    )
+#    class Meta:
+#        verbose_name = "Incidencia (transferista)"
+#        verbose_name_plural = "Incidencias (transferista)"
+#        ordering = ["-created_at"]

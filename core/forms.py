@@ -184,3 +184,12 @@ class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
         self.fields["basico"].queryset = Basico.objects.all().order_by("nombre")
         self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
         self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
+
+class IncidenciasHotelForm(IncidenciaCamposComunesForm):
+    hotel = forms.ModelChoiceField(
+        queryset=Basico.objects.none(),
+        label="Hotel",
+        required=True,
+        empty_label="Nombre del hotel",
+    )
+    
