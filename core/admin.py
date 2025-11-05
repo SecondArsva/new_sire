@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Pais, Ciudad
 from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
-from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte
+from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel
 
 # Register your models here.
 
@@ -54,3 +54,14 @@ class IncidenciaTransporteAdmin(admin.ModelAdmin):
 class BasicoAdmin(admin.ModelAdmin):
     list_display = ('nombre',)
     ordering = ["nombre"]
+
+@admin.register(IncidenciaHotel)
+class IncidenciaHotelAdmin(admin.ModelAdmin):
+    list_display=('reserva',
+                  "hotel",
+                  "room_key", "room_clean", "room_size", "room_bed_type", "room_facility",
+                  "room_amenity", "room_maintenance", "restaurant_personal", "restaurant_quantity",
+                  "restaurant_quality", "reserve_non_booking", "reserve_city_tax", "reserve_location",
+                  "other_personal", "other_lobby_size",
+                  "causa",
+                  'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',)

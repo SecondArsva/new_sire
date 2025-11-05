@@ -192,4 +192,43 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         required=True,
         empty_label="Nombre del hotel",
     )
-    
+        # Tipos de incidencia
+    # ROOM
+    room_key = forms.BooleanField(label="KEY", required=False, initial=False)
+    room_clean = forms.BooleanField(label="CLEAN", required=False, initial=False)
+    room_size = forms.BooleanField(label="SIZE", required=False, initial=False)
+    room_bed_type = forms.BooleanField(label="BED TYPE", required=False, initial=False)
+    room_facility = forms.BooleanField(label="FACILITY", required=False, initial=False)
+    room_amenity = forms.BooleanField(label="AMENITY", required=False, initial=False)
+    room_maintenance = forms.BooleanField(label="MAINTENANCE", required=False, initial=False)
+    # RESTAURANTE
+    restaurant_personal = forms.BooleanField(label="PARSONAL", required=False, initial=False)
+    restaurant_quantity = forms.BooleanField(label="QUANTITY", required=False, initial=False)
+    restaurant_quality = forms.BooleanField(label="QUALITY", required=False, initial=False)
+    # RESERVA
+    reserve_non_booking = forms.BooleanField(label="NON BOOKING", required=False, initial=False)
+    reserve_city_tax = forms.BooleanField(label="CITY TAX", required=False, initial=False)
+    reserve_location = forms.BooleanField(label="LOCATION", required=False, initial=False)
+    # OTROS
+    other_personal = forms.BooleanField(label="PERSONAL", required=False, initial=False)
+    other_lobby_size = forms.BooleanField(label="LOBBY SIZE", required=False, initial=False)
+
+    causa = forms.ChoiceField(
+        label="Causa",
+        choices=[("", "---------")] + [("HTL", "Error Hotel"), ("EMV", "Error EMV"), ("UNK", "Desconocido"),],
+        required=True,
+    )
+
+    field_order = [
+        "hotel",
+        "room_key", "room_clean", "room_size", "room_bed_type", "room_facility",
+        "room_amenity", "room_maintenance", "restaurant_personal", "restaurant_quantity",
+        "restaurant_quality", "reserve_non_booking", "reserve_city_tax", "reserve_location",
+        "other_personal", "other_lobby_size",
+        "causa",
+        "momento", "remitente", "via", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["hotel"].queryset = Hotel.objects.all().order_by("nombre")

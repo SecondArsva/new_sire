@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.functions import Lower # case sensitive
 from django.conf import settings # Para pillar el usuario a través del auth
+from enum import Enum, auto
 
 # Create your models here.
 
@@ -366,6 +367,30 @@ class IncidenciaHotel(IncidenciaCamposComunes):
         verbose_name = "Incidencia (hotel)"
         verbose_name_plural = "Incidencias (hotel)"
         ordering = ["-created_at"]
+
+    # Función rollo ft_is_tal() para futuros filtrados de cara a ver incidencias por subarea.
+    def is_subincidence(self, subarea: str) -> bool:
+        '''
+        Recibe la flag de una subarea como str y analiza el registro para ver
+        si hay alguna incidencia del subárea seleccionada.
+        Flags: "ROOM", "REST", "RESE", "OTHE".
+        '''
+        if (subarea == "ROOM"):
+            prefijo = "room_"
+        elif (subarea == "REST"):
+            prefijo = "restaurant_"
+        elif (subarea == "RESE"):
+            prefijo = "reserve_"
+        elif (subarea == "OTHE"):
+            prefijo = "other_"
+        else:
+            return False # subárea no relacionada
+        
+        for field in self._meta.get_field():
+            if field.name.startswith(prefijo):
+                if getattr(self, field.name):
+                    return True
+        return False
 
 
 #class PutoTransferista(models.TextChoices):
