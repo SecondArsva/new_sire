@@ -393,6 +393,20 @@ class IncidenciaHotel(IncidenciaCamposComunes):
         return False
 
 class IncidenciaTransferista(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_transferista",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_transferista_creadas",
+        verbose_name="Creado por"
+    )
+
     class Puto(models.TextChoices):
         APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
         HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
@@ -424,7 +438,12 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         UNKNOWN = "UNKNOWN", "Desconocido"
 
     # fecha???
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
+    ciudad = models.ForeignKey(
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad",
+        related_name="incidencias_transferista",
+    )
     punto = models.CharField(
         max_length=7,
         verbose_name="Punto del transfer",
@@ -449,4 +468,41 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name = "Incidencia (transferista)"
         verbose_name_plural = "Incidencias (transferista)"
         ordering = ["-created_at"]
-    
+
+class IncidenciaOpcionales(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_opcionales",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_opcionales_creadas",
+        verbose_name="Creado por"
+    )
+
+    class Incidencia(models.TextChoices):
+        NO_REALIZADO = "NRL", "No realizado"
+        CALIDAD = "QLT", "Calidad del servicio"
+        IMPAGO = "IMP", "Impago"
+
+    ciudad = models.ForeignKey(
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad",
+        related_name="incidencias_opcionales",
+    )
+    incidencia = models.CharField(
+        max_length=3,
+        choices=Incidencia.choices,
+        verbose_name="Incidencia",
+        db_index=True,
+    )
+
+    class Meta:
+        verbose_name = "Incidencia (opcional)"
+        verbose_name_plural = "Incidencias (opcionales)"
+        ordering = ["-created_at"]
