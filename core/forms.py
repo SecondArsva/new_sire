@@ -6,8 +6,8 @@ from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
 from .models import Operador, Hotel, Guia, Ciudad, Basico
-from .models import Momento, Remitente, ViaContacto, Pagador
-from .models import IncidenciaGuia
+from .models import IncidenciaCamposComunes
+from .models import IncidenciaGuia, IncidenciaTransferista
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -89,22 +89,22 @@ class IncidenciaCamposComunesForm(forms.Form):
     """Formulario de captura de datos para los campos comunes que ha de introducir el usuario"""
     momento = forms.ChoiceField(
         label="Momento del viaje",
-        choices=[("", "---------")] + list(Momento.choices),
+        choices=[("", "---------")] + list(IncidenciaCamposComunes.Momento.choices),
         required=True,
     )
     remitente = forms.ChoiceField(
         label="Remitente",
-        choices=[("", "---------")] + list(Remitente.choices),
+        choices=[("", "---------")] + list(IncidenciaCamposComunes.Remitente.choices),
         required=True,
     )
     via = forms.ChoiceField(
         label="Vía de contacto",
-        choices=[("", "---------")] + list(ViaContacto.choices),
+        choices=[("", "---------")] + list(IncidenciaCamposComunes.ViaContacto.choices),
         required=True,
     )
     pagador = forms.ChoiceField(
         label="Pagador",
-        choices=[("", "---------")] + list(Pagador.choices),
+        choices=[("", "---------")] + list(IncidenciaCamposComunes.Pagador.choices),
         required=True,
     )
     importe = forms.DecimalField(
@@ -143,6 +143,7 @@ class IncidenciaGuiaForm(IncidenciaCamposComunesForm):
     # Personalización del orden en que se renderizan los campos. Primero los de guía, luego los comunes.
     field_order = [
         "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
+        # Campos Comunes
         "momento", "remitente", "via", "pagador", "importe", "comentario",
     ]
 
@@ -176,6 +177,7 @@ class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
 
     field_order = [
         "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
+        # Campos Comunes
         "momento", "remitente", "via", "pagador", "importe", "comentario",
     ]
 
@@ -192,7 +194,7 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         required=True,
         empty_label="Nombre del hotel",
     )
-        # Tipos de incidencia
+    # Tipos de incidencia
     # ROOM
     room_key = forms.BooleanField(label="KEY", required=False, initial=False)
     room_clean = forms.BooleanField(label="CLEAN", required=False, initial=False)
@@ -226,9 +228,44 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         "restaurant_quality", "reserve_non_booking", "reserve_city_tax", "reserve_location",
         "other_personal", "other_lobby_size",
         "causa",
+        # Campos Comunes
         "momento", "remitente", "via", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["hotel"].queryset = Hotel.objects.all().order_by("nombre")
+
+class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
+    ciudad = forms.ModelChoiceField(
+        queryset=Ciudad.objects.none(),
+        label="Ciudad",
+        required=True,
+        empty_label="Selecciona una ciudad",)
+    punto = forms.ChoiceField(
+        label="Punto",
+        choices=[("", "---------")] + list(IncidenciaTransferista.Puto.choices),
+        required=True,
+    )
+    incidencia = forms.ChoiceField(
+        label="Incidencia",
+        choices=[("", "---------")] + list(IncidenciaTransferista.Incidencia.choices),
+        required=True,
+    )
+    causa = forms.ChoiceField(
+        label = "Causa",
+        choices=[("", "---------")] + list(IncidenciaTransferista.Causas.choices),
+        required=True,
+    )
+    pax_avisado = forms.BooleanField(label="Pasajero Avisado", required=False, initial=False)
+    factura = forms.BooleanField(label="Factura", required=False, initial=False)
+
+    field_order = [
+        "ciudad", "punto", "incidencia", "causa", "pax_avisado", "factura",
+        # Campos Comunes
+        "momento", "remitente", "via", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")

@@ -126,36 +126,6 @@ class Guia(models.Model):
 #   ║ Incidencias ║
 #   ╚═════════════╝
 
-#   ╔═════════════╗
-#   ║ TextChoices ║
-#   ╚═════════════╝
-class Momento(models.TextChoices):
-    PRE = "PRE", "Antes del viaje"
-    DUR = "DUR", "Durante el viaje"
-    POST = "POST", "Después del viaje"
-
-class Remitente(models.TextChoices):
-    CLIENTE = "CLI", "Cliente"
-    HOTEL = "HOT", "Hotel"
-    GUIA = "GUI", "Guía"
-    AGENCIA = "AGE", "Agencia"
-    INTERNO = "INT", "Interno"
-    OTRO = "OTR", "Otro"
-
-class ViaContacto(models.TextChoices):
-    TELEFONO = "TEL", "Teléfono"
-    EMAIL = "EML", "Email"
-    WHATSAPP = "WHA", "WhatsApp"
-    OTRO = "OTR", "Otros"
-    # HappyFaces
-    # MyTryp
-
-class Pagador(models.TextChoices):
-    EMV = "EMV", "EMV"
-    CLIENTE = "CLI", "Cliente"
-    AGENCIA = "AGE", "Agencia"
-    NONE = "NON", "Nadie"
-
 # - reserva, un FK al registro de la reserva a la que corresponde.
 # - momento, CharField momento del viaje en eque se dio (pre, durante o post viaje)
 # - remitente, charfield (¿Quién llama?)
@@ -167,6 +137,36 @@ class Pagador(models.TextChoices):
 # - timestamp datetime automático
 class IncidenciaCamposComunes(models.Model):
     """Campos comunes para cualquier incidencia (modelo abstracto)."""
+    #   ╔═════════════╗
+    #   ║ TextChoices ║
+    #   ╚═════════════╝
+    class Momento(models.TextChoices):
+        PRE = "PRE", "Antes del viaje"
+        DUR = "DUR", "Durante el viaje"
+        POST = "POST", "Después del viaje"
+
+    class Remitente(models.TextChoices):
+        CLIENTE = "CLI", "Cliente"
+        HOTEL = "HOT", "Hotel"
+        GUIA = "GUI", "Guía"
+        AGENCIA = "AGE", "Agencia"
+        INTERNO = "INT", "Interno"
+        OTRO = "OTR", "Otro"
+
+    class ViaContacto(models.TextChoices):
+        TELEFONO = "TEL", "Teléfono"
+        EMAIL = "EML", "Email"
+        WHATSAPP = "WHA", "WhatsApp"
+        OTRO = "OTR", "Otros"
+        # HappyFaces
+        # MyTryp
+
+    class Pagador(models.TextChoices):
+        EMV = "EMV", "EMV"
+        CLIENTE = "CLI", "Cliente"
+        AGENCIA = "AGE", "Agencia"
+        NONE = "NON", "Nadie"
+    
     reserva = models.ForeignKey(
         Reserva,
         on_delete=models.PROTECT,
@@ -392,35 +392,61 @@ class IncidenciaHotel(IncidenciaCamposComunes):
                     return True
         return False
 
+class IncidenciaTransferista(IncidenciaCamposComunes):
+    class Puto(models.TextChoices):
+        APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
+        HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
 
-#class PutoTransferista(models.TextChoices):
-#    APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
-#    HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
-#
-#    TER_HTL = "TER/HTL", "Terminal de buses / Hotel"
-#    HTL_TER = "HTL/TER", "Hotel / Terminal de buses"
-#    
-#    HTL_HTL = "HTL/HTL", "Hotel / Hotel"
-#    
-#    STN_HTL = "STN/HTL", "Estación de tren / Hotel"
-#    HTL_STN = "HTL/STN", "Hotel / Estación de tren"
-#    
-#    PRT_HTL = "PRT/HTL", "Puerto marítimo / Hotel"
-#    HTL_PRT = "HTL/PRT", "Hotel / Puerto marítimo"
-#
-#class IncidenciaTransferista(IncidenciaCamposComunes):
-#    # fecha???
-#    ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
-#    punto = models.CharField(
-#        max_length=5,
-#        choices=PutoTransferista.choices,
-#        verbose_name="Punto del transfer",
-#        db_index=True, # Revisa esto TODO
-#    )
-#    incidencia = models.CharField(
-#        max_length=
-#    )
-#    class Meta:
-#        verbose_name = "Incidencia (transferista)"
-#        verbose_name_plural = "Incidencias (transferista)"
-#        ordering = ["-created_at"]
+        TER_HTL = "TER/HTL", "Terminal de buses / Hotel"
+        HTL_TER = "HTL/TER", "Hotel / Terminal de buses"
+
+        HTL_HTL = "HTL/HTL", "Hotel / Hotel"
+
+        STN_HTL = "STN/HTL", "Estación de tren / Hotel"
+        HTL_STN = "HTL/STN", "Hotel / Estación de tren"
+
+        PRT_HTL = "PRT/HTL", "Puerto marítimo / Hotel"
+        HTL_PRT = "HTL/PRT", "Hotel / Puerto marítimo"
+
+    class Incidencia(models.TextChoices):
+        PAX_NO_SHOW = "PAX_NO_SHOW", "Pasajero ausente"
+        TRF_ERROR = "TRF_ERROR", "Error del transferista"
+        MISS_MEET = "MISS_MEET", "Encuentro no efectuado"
+        OTHERS = "OTHERS", "Otros"
+
+    class Causas(models.TextChoices):
+        FLT_DELAY = "FLT_DELAY", "Vuelo retrasado"
+        FLT_CHANGE = "FLT_CHANGE", "Cambio de vuelo"
+        LOST_BAGGAGE = "LOST_BAGGAGE", "Equipaje perdido"
+        APT_MGM = "APT_SVC_DELAY", "Administración aeropuerto"
+        PAX_ERROR = "PAX_ERROR", "Error PAX"
+        TRF_ERROR = "TRF_ERROR", "Error transferista"
+        UNKNOWN = "UNKNOWN", "Desconocido"
+
+    # fecha???
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
+    punto = models.CharField(
+        max_length=7,
+        verbose_name="Punto del transfer",
+        choices=Puto.choices,
+        db_index=True, # Revisa esto TODO
+    )
+    incidencia = models.CharField(
+        max_length=20,
+        verbose_name="Incidencia",
+        choices=Incidencia.choices,
+        db_index=True,
+    )
+    causa = models.CharField(
+        max_length=20,
+        verbose_name="Causa",
+        choices=Causas.choices,
+        db_index=True,
+    )
+    pax_avisado = models.BooleanField(default=False)
+    factura = models.BooleanField(default=False)
+    class Meta:
+        verbose_name = "Incidencia (transferista)"
+        verbose_name_plural = "Incidencias (transferista)"
+        ordering = ["-created_at"]
+    
