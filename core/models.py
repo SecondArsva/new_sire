@@ -121,10 +121,78 @@ class Guia(models.Model):
     def __str__(self):
         return f"{self.nombre} {self.apellido1} {self.apellido2}".strip()
 
-
 #   ╔═════════════╗
 #   ║ Incidencias ║
 #   ╚═════════════╝
+
+class TipoMomento(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Antes del viaje
+        - Durante el viaje
+        - Después del viaje
+    """
+    class Meta:
+        verbose_name = "Tipo de momento"
+        verbose_name_plural = "Tipos de momento"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
+class TipoRemitente(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Cliente
+        - Hotel
+        - Guía
+        - Agencia
+        - Interno
+        - Otro
+    """
+    class Meta:
+        verbose_name = "Tipo de remitente"
+        verbose_name_plural = "Tipos de remitente"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
+class TipoViaContacto(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Teléfono
+        - Chat
+        - Email
+        - Otro
+    """
+    class Meta:
+        verbose_name = "Tipo de vía de contacto"
+        verbose_name_plural = "Tipos de vía de contacto"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
+class TipoPagador(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - EMV
+        - PAX
+        - Agencia
+        - Nadie
+    """
+    class Meta:
+        verbose_name = "Tipo de pagador"
+        verbose_name_plural = "Tipos de pagador"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
 
 # - reserva, un FK al registro de la reserva a la que corresponde.
 # - momento, CharField momento del viaje en eque se dio (pre, durante o post viaje)
@@ -140,6 +208,7 @@ class IncidenciaCamposComunes(models.Model):
     #   ╔═════════════╗
     #   ║ TextChoices ║
     #   ╚═════════════╝
+    
     class Momento(models.TextChoices):
         PRE = "PRE", "Antes del viaje"
         DUR = "DUR", "Durante el viaje"
@@ -175,30 +244,55 @@ class IncidenciaCamposComunes(models.Model):
         db_index=True,
     )
 
-    momento = models.CharField(
-        max_length=5,
-        choices=Momento.choices,
+    #momento = models.CharField(
+    #    max_length=5,
+    #    choices=Momento.choices,
+    #    verbose_name="Momento del viaje",
+    #    db_index=True, # Revisa esto TODO
+    #)
+    #remitente = models.CharField(
+    #    max_length=3,
+    #    choices=Remitente.choices,
+    #    verbose_name="Remitente",
+    #    db_index=True, # Revisa esto TODO
+    #)
+    #via = models.CharField(
+    #    max_length=3,
+    #    choices=ViaContacto.choices,
+    #    verbose_name="Vía de contacto",
+    #    db_index=True, # Revisa esto TODO
+    #)
+    #pagador = models.CharField(
+    #    max_length=3,
+    #    choices=Pagador.choices,
+    #    verbose_name="Pagador",
+    #    db_index=True,
+    #)
+    momento = models.ForeignKey(
+        TipoMomento,
+        on_delete=models.PROTECT,
         verbose_name="Momento del viaje",
-        db_index=True, # Revisa esto TODO
+        db_index=True,
     )
-    remitente = models.CharField(
-        max_length=3,
-        choices=Remitente.choices,
+    remitente = models.ForeignKey(
+        TipoRemitente,
+        on_delete=models.PROTECT,
         verbose_name="Remitente",
-        db_index=True, # Revisa esto TODO
+        db_index=True,
     )
-    via = models.CharField(
-        max_length=3,
-        choices=ViaContacto.choices,
+    via = models.ForeignKey(
+        TipoViaContacto,
+        on_delete=models.PROTECT,
         verbose_name="Vía de contacto",
-        db_index=True, # Revisa esto TODO
+        db_index=True,
     )
-    pagador = models.CharField(
-        max_length=3,
-        choices=Pagador.choices,
+    pagador = models.ForeignKey(
+        TipoPagador,
+        on_delete=models.PROTECT,
         verbose_name="Pagador",
         db_index=True,
     )
+
     importe = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -462,8 +556,6 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         choices=Causas.choices,
         db_index=True,
     )
-    pax_avisado = models.BooleanField(default=False)
-    factura = models.BooleanField(default=False)
     class Meta:
         verbose_name = "Incidencia (transferista)"
         verbose_name_plural = "Incidencias (transferista)"
@@ -505,4 +597,31 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
     class Meta:
         verbose_name = "Incidencia (opcional)"
         verbose_name_plural = "Incidencias (opcionales)"
+        ordering = ["-created_at"]
+
+# Incidencias Autotipadas
+# Modelos cuyas áreas representan directamente la incidencia a la que se
+# refieren, sin tipos adicionales.
+class IncidenciaMytrip(IncidenciaCamposComunes):
+    class Meta:
+        verbose_name = "Incidencia (mytrip)"
+        verbose_name_plural = "Incidencias (mytrip)"
+        ordering = ["-created_at"]
+
+class IncidenciaItinerario(IncidenciaCamposComunes):
+    class Meta:
+        verbose_name = "Incidencia (itinerario)"
+        verbose_name_plural = "Incidencias (itinerarios)"
+        ordering = ["-created_at"]
+
+class IncidenciaMonumento(IncidenciaCamposComunes):
+    class Meta:
+        verbose_name = "Incidencia (monumento)"
+        verbose_name_plural = "Incidencias (monumentos)"
+        ordering = ["-created_at"]
+
+class IncidenciaVuelo(IncidenciaCamposComunes):
+    class Meta:
+        verbose_name = "Incidencia (vuelo)"
+        verbose_name_plural = "Incidencias (vuelos)"
         ordering = ["-created_at"]

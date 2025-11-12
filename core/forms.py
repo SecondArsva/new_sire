@@ -6,6 +6,7 @@ from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
 from .models import Operador, Hotel, Guia, Ciudad, Basico
+from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcionales
 from django.core.validators import RegexValidator
@@ -87,26 +88,50 @@ class ReservaCrearForm(forms.Form):
 #   ╚═════════════╝
 class IncidenciaCamposComunesForm(forms.Form):
     """Formulario de captura de datos para los campos comunes que ha de introducir el usuario"""
-    momento = forms.ChoiceField(
+    momento = forms.ModelChoiceField(
         label="Momento del viaje",
-        choices=[("", "---------")] + list(IncidenciaCamposComunes.Momento.choices),
+        queryset=TipoMomento.objects.none(),  # placeholder temporal
+        empty_label="---------",
         required=True,
     )
-    remitente = forms.ChoiceField(
+    remitente = forms.ModelChoiceField(
         label="Remitente",
-        choices=[("", "---------")] + list(IncidenciaCamposComunes.Remitente.choices),
+        queryset=TipoRemitente.objects.none(),
+        empty_label="---------",
         required=True,
     )
-    via = forms.ChoiceField(
+    via = forms.ModelChoiceField(
         label="Vía de contacto",
-        choices=[("", "---------")] + list(IncidenciaCamposComunes.ViaContacto.choices),
+        queryset=TipoViaContacto.objects.none(),
+        empty_label="---------",
         required=True,
     )
-    pagador = forms.ChoiceField(
+    pagador = forms.ModelChoiceField(
         label="Pagador",
-        choices=[("", "---------")] + list(IncidenciaCamposComunes.Pagador.choices),
+        queryset=TipoPagador.objects.none(),
+        empty_label="---------",
         required=True,
     )
+    #momento = forms.ChoiceField(
+    #    label="Momento del viaje",
+    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.Momento.choices),
+    #    required=True,
+    #)
+    #remitente = forms.ChoiceField(
+    #    label="Remitente",
+    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.Remitente.choices),
+    #    required=True,
+    #)
+    #via = forms.ChoiceField(
+    #    label="Vía de contacto",
+    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.ViaContacto.choices),
+    #    required=True,
+    #)
+    #pagador = forms.ChoiceField(
+    #    label="Pagador",
+    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.Pagador.choices),
+    #    required=True,
+    #)
     importe = forms.DecimalField(
         label="Importe (€)",
         min_value=0,
@@ -121,6 +146,13 @@ class IncidenciaCamposComunesForm(forms.Form):
         required=True,
         max_length=500,
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["momento"].queryset = TipoMomento.objects.all().order_by("id")
+        self.fields["remitente"].queryset = TipoRemitente.objects.all().order_by("id")
+        self.fields["via"].queryset = TipoViaContacto.objects.all().order_by("id")
+        self.fields["pagador"].queryset = TipoPagador.objects.all().order_by("id")
 
 class IncidenciaDemoForm(IncidenciaCamposComunesForm):
     """Demostración de la herencia, sin campos añadidos.""" # Celia Juver Cruz'nt lol
@@ -257,11 +289,9 @@ class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
         choices=[("", "---------")] + list(IncidenciaTransferista.Causas.choices),
         required=True,
     )
-    pax_avisado = forms.BooleanField(label="Pasajero Avisado", required=False, initial=False)
-    factura = forms.BooleanField(label="Factura", required=False, initial=False)
 
     field_order = [
-        "ciudad", "punto", "incidencia", "causa", "pax_avisado", "factura",
+        "ciudad", "punto", "incidencia", "causa",
         # Campos Comunes
         "momento", "remitente", "via", "pagador", "importe", "comentario",
     ]

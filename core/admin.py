@@ -86,7 +86,7 @@ class IncidenciaHotelAdmin(admin.ModelAdmin):
 class IncidenciaTransferistaAdmin(admin.ModelAdmin):
     list_display = (
         'reserva',
-        "ciudad", "punto", "incidencia", "causa", "pax_avisado", "factura",
+        "ciudad", "punto", "incidencia", "causa",
         # Campos Comunes
         'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
         'comentario',
