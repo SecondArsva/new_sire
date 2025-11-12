@@ -602,26 +602,26 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
 # Incidencias Autotipadas
 # Modelos cuyas áreas representan directamente la incidencia a la que se
 # refieren, sin tipos adicionales.
-class IncidenciaMytrip(IncidenciaCamposComunes):
-    class Meta:
-        verbose_name = "Incidencia (mytrip)"
-        verbose_name_plural = "Incidencias (mytrip)"
-        ordering = ["-created_at"]
-
-class IncidenciaItinerario(IncidenciaCamposComunes):
-    class Meta:
-        verbose_name = "Incidencia (itinerario)"
-        verbose_name_plural = "Incidencias (itinerarios)"
-        ordering = ["-created_at"]
-
-class IncidenciaMonumento(IncidenciaCamposComunes):
-    class Meta:
-        verbose_name = "Incidencia (monumento)"
-        verbose_name_plural = "Incidencias (monumentos)"
-        ordering = ["-created_at"]
-
-class IncidenciaVuelo(IncidenciaCamposComunes):
-    class Meta:
-        verbose_name = "Incidencia (vuelo)"
-        verbose_name_plural = "Incidencias (vuelos)"
-        ordering = ["-created_at"]
+#class IncidenciaMytrip(IncidenciaCamposComunes):
+#    class Meta:
+#        verbose_name = "Incidencia (mytrip)"
+#        verbose_name_plural = "Incidencias (mytrip)"
+#        ordering = ["-created_at"]
+#
+#class IncidenciaItinerario(IncidenciaCamposComunes):
+#    class Meta:
+#        verbose_name = "Incidencia (itinerario)"
+#        verbose_name_plural = "Incidencias (itinerarios)"
+#        ordering = ["-created_at"]
+#
+#class IncidenciaMonumento(IncidenciaCamposComunes):
+#    class Meta:
+#        verbose_name = "Incidencia (monumento)"
+#        verbose_name_plural = "Incidencias (monumentos)"
+#        ordering = ["-created_at"]
+#
+#class IncidenciaVuelo(IncidenciaCamposComunes):
+#    class Meta:
+#        verbose_name = "Incidencia (vuelo)"
+#        verbose_name_plural = "Incidencias (vuelos)"
+#        ordering = ["-created_at"]
