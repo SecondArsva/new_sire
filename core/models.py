@@ -486,6 +486,45 @@ class IncidenciaHotel(IncidenciaCamposComunes):
                     return True
         return False
 
+class TipoTransferistaIncidencia(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Pasajero ausente
+        - Error del transferista
+        - Encuentro no efectuado
+        - Otros
+    """
+    class Meta:
+        verbose_name = "Tipo de incidencia transferista"
+        verbose_name_plural = "Tipos de incidencia transferista"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
+class TipoTransferistaPunto(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Aeropuerto / Hotel
+        - Hotel / Aeropuerto
+        - Terminal de buses / Hotel
+        - Hotel / Terminal de buses
+        - Hotel / Hotel
+        - Estación de tren / Hotel
+        - Hotel / Estación de tren
+        - Puerto marítimo / Hotel
+        - Hotel / Puerto marítimo
+    """
+    class Meta:
+        verbose_name = "Tipo de punto transferista"
+        verbose_name_plural = "Tipos de punto transferista"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
 class IncidenciaTransferista(IncidenciaCamposComunes):
     # Sobreescritura del padre
     reserva = models.ForeignKey(
@@ -501,27 +540,27 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Creado por"
     )
 
-    class Puto(models.TextChoices):
-        APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
-        HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
-
-        TER_HTL = "TER/HTL", "Terminal de buses / Hotel"
-        HTL_TER = "HTL/TER", "Hotel / Terminal de buses"
-
-        HTL_HTL = "HTL/HTL", "Hotel / Hotel"
-
-        STN_HTL = "STN/HTL", "Estación de tren / Hotel"
-        HTL_STN = "HTL/STN", "Hotel / Estación de tren"
-
-        PRT_HTL = "PRT/HTL", "Puerto marítimo / Hotel"
-        HTL_PRT = "HTL/PRT", "Hotel / Puerto marítimo"
-
-    class Incidencia(models.TextChoices):
-        PAX_NO_SHOW = "PAX_NO_SHOW", "Pasajero ausente"
-        TRF_ERROR = "TRF_ERROR", "Error del transferista"
-        MISS_MEET = "MISS_MEET", "Encuentro no efectuado"
-        OTHERS = "OTHERS", "Otros"
-
+#    class Puto(models.TextChoices):
+#        APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
+#        HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
+#
+#        TER_HTL = "TER/HTL", "Terminal de buses / Hotel"
+#        HTL_TER = "HTL/TER", "Hotel / Terminal de buses"
+#
+#        HTL_HTL = "HTL/HTL", "Hotel / Hotel"
+#
+#        STN_HTL = "STN/HTL", "Estación de tren / Hotel"
+#        HTL_STN = "HTL/STN", "Hotel / Estación de tren"
+#
+#        PRT_HTL = "PRT/HTL", "Puerto marítimo / Hotel"
+#        HTL_PRT = "HTL/PRT", "Hotel / Puerto marítimo"
+#
+#    class Incidencia(models.TextChoices):
+#        PAX_NO_SHOW = "PAX_NO_SHOW", "Pasajero ausente"
+#        TRF_ERROR = "TRF_ERROR", "Error del transferista"
+#        MISS_MEET = "MISS_MEET", "Encuentro no efectuado"
+#        OTHERS = "OTHERS", "Otros"
+#
     class Causas(models.TextChoices):
         FLT_DELAY = "FLT_DELAY", "Vuelo retrasado"
         FLT_CHANGE = "FLT_CHANGE", "Cambio de vuelo"
@@ -538,18 +577,30 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Ciudad",
         related_name="incidencias_transferista",
     )
-    punto = models.CharField(
-        max_length=7,
-        verbose_name="Punto del transfer",
-        choices=Puto.choices,
-        db_index=True, # Revisa esto TODO
-    )
-    incidencia = models.CharField(
-        max_length=20,
-        verbose_name="Incidencia",
-        choices=Incidencia.choices,
+    #punto = models.CharField(
+    #    max_length=7,
+    #    verbose_name="Punto del transfer",
+    #    choices=Puto.choices,
+    #    db_index=True,
+    #)
+    punto = models.ForeignKey(
+        TipoTransferistaPunto,
+        on_delete=models.PROTECT,
+        verbose_name="Punto del viaje",
         db_index=True,
     )
+    incidencia = models.ForeignKey(
+        TipoTransferistaIncidencia,
+        on_delete=models.PROTECT,
+        verbose_name="Incidencia",
+        db_index=True,
+    )
+    #incidencia = models.CharField(
+    #    max_length=20,
+    #    verbose_name="Incidencia",
+    #    choices=Incidencia.choices,
+    #    db_index=True,
+    #)
     causa = models.CharField(
         max_length=20,
         verbose_name="Causa",
@@ -599,15 +650,12 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (opcionales)"
         ordering = ["-created_at"]
 
-# Incidencias Autotipadas
-# Modelos cuyas áreas representan directamente la incidencia a la que se
-# refieren, sin tipos adicionales.
-#class IncidenciaMytrip(IncidenciaCamposComunes):
-#    class Meta:
-#        verbose_name = "Incidencia (mytrip)"
-#        verbose_name_plural = "Incidencias (mytrip)"
-#        ordering = ["-created_at"]
-#
+class IncidenciaMytrip(IncidenciaCamposComunes): # Autotipado
+    class Meta:
+        verbose_name = "Incidencia (mytrip)"
+        verbose_name_plural = "Incidencias (mytrip)"
+        ordering = ["-created_at"]
+
 #class IncidenciaItinerario(IncidenciaCamposComunes):
 #    class Meta:
 #        verbose_name = "Incidencia (itinerario)"
@@ -620,7 +668,7 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
 #        verbose_name_plural = "Incidencias (monumentos)"
 #        ordering = ["-created_at"]
 #
-#class IncidenciaVuelo(IncidenciaCamposComunes):
+#class IncidenciaVueloIncluido(IncidenciaCamposComunes):
 #    class Meta:
 #        verbose_name = "Incidencia (vuelo)"
 #        verbose_name_plural = "Incidencias (vuelos)"
