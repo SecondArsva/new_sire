@@ -10,6 +10,7 @@ class Pais(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
 
     class Meta:
+        db_table = "core_pais"
         verbose_name = "País"
         verbose_name_plural = "Países"
         ordering = ["nombre"]
@@ -29,6 +30,7 @@ class Ciudad(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activa")
 
     class Meta:
+        db_table = "core_ciudad"
         verbose_name = "Ciudad"
         verbose_name_plural = "Ciudades"
         ordering = ["nombre"]
@@ -49,6 +51,7 @@ class Operador(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
+        db_table = "core_operador"
         verbose_name = "Operador"
         verbose_name_plural = "Operadores"
         ordering = ["nombre"]
@@ -72,6 +75,7 @@ class Reserva(models.Model):
     fecha_inicio = models.DateField(verbose_name="Fecha de inicio")
 
     class Meta:
+        db_table = "core_reserva"
         verbose_name = "Reserva"
         verbose_name_plural = "Reservas"
         ordering = ["-fecha_inicio"]
@@ -94,6 +98,7 @@ class Hotel(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
+        db_table = "core_hotel"
         verbose_name = "Hotel"
         verbose_name_plural = "Hoteles"
         ordering = ["nombre"]
@@ -114,6 +119,7 @@ class Guia(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
+        db_table = "core_guia"
         verbose_name = "Guía"
         verbose_name_plural = "Guías"
         ordering = ["nombre"]
@@ -134,8 +140,9 @@ class TipoMomento(models.Model):
         - Después del viaje
     """
     class Meta:
-        verbose_name = "Tipo de momento"
-        verbose_name_plural = "Tipos de momento"
+        db_table = "core_tipo_momento"
+        verbose_name = "Tipo (momento)"
+        verbose_name_plural = "Tipos (momento)"
         ordering = ["id"]
 
     def __str__(self):
@@ -153,8 +160,9 @@ class TipoRemitente(models.Model):
         - Otro
     """
     class Meta:
-        verbose_name = "Tipo de remitente"
-        verbose_name_plural = "Tipos de remitente"
+        db_table = "core_tipo_remitente"
+        verbose_name = "Tipo (remitente)"
+        verbose_name_plural = "Tipos (remitente)"
         ordering = ["id"]
 
     def __str__(self):
@@ -170,8 +178,9 @@ class TipoViaContacto(models.Model):
         - Otro
     """
     class Meta:
-        verbose_name = "Tipo de vía de contacto"
-        verbose_name_plural = "Tipos de vía de contacto"
+        db_table = "core_tipo_via_contacto"
+        verbose_name = "Tipo (vías de contacto)"
+        verbose_name_plural = "Tipos (vías de contacto)"
         ordering = ["id"]
 
     def __str__(self):
@@ -187,13 +196,39 @@ class TipoPagador(models.Model):
         - Nadie
     """
     class Meta:
-        verbose_name = "Tipo de pagador"
-        verbose_name_plural = "Tipos de pagador"
+        db_table = "core_tipo_pagador"
+        verbose_name = "Tipo (pagador)"
+        verbose_name_plural = "Tipos (pagador)"
         ordering = ["id"]
 
     def __str__(self):
         return self.nombre
 
+class TipoCausa(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - by EMV
+        - by PAX
+        - by OPERATOR
+        - by DMC
+        - UNKNOWN
+        - ¿¿¿ INFO ???
+        - ¿¿¿ CONGRATS ???
+
+    Adicionales por área:
+    
+    """
+
+    class Meta:
+        db_table = "core_tipo_causa"
+        verbose_name = "Tipo (vías de contacto)"
+        verbose_name_plural = "Tipos (vías de contacto)"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+    
 # - reserva, un FK al registro de la reserva a la que corresponde.
 # - momento, CharField momento del viaje en eque se dio (pre, durante o post viaje)
 # - remitente, charfield (¿Quién llama?)
@@ -209,41 +244,29 @@ class IncidenciaCamposComunes(models.Model):
     #   ║ TextChoices ║
     #   ╚═════════════╝
     
-    class Momento(models.TextChoices):
-        PRE = "PRE", "Antes del viaje"
-        DUR = "DUR", "Durante el viaje"
-        POST = "POST", "Después del viaje"
-
-    class Remitente(models.TextChoices):
-        CLIENTE = "CLI", "Cliente"
-        HOTEL = "HOT", "Hotel"
-        GUIA = "GUI", "Guía"
-        AGENCIA = "AGE", "Agencia"
-        INTERNO = "INT", "Interno"
-        OTRO = "OTR", "Otro"
-
-    class ViaContacto(models.TextChoices):
-        TELEFONO = "TEL", "Teléfono"
-        EMAIL = "EML", "Email"
-        WHATSAPP = "WHA", "WhatsApp"
-        OTRO = "OTR", "Otros"
-        # HappyFaces
-        # MyTryp
-
-    class Pagador(models.TextChoices):
-        EMV = "EMV", "EMV"
-        CLIENTE = "CLI", "Cliente"
-        AGENCIA = "AGE", "Agencia"
-        NONE = "NON", "Nadie"
-    
-    reserva = models.ForeignKey(
-        Reserva,
-        on_delete=models.PROTECT,
-        related_name="%(class)ss",   # genérico para no chocar; no lo usarás en código
-        verbose_name="Reserva",
-        db_index=True,
-    )
-
+    #class Momento(models.TextChoices):
+    #    PRE = "PRE", "Antes del viaje"
+    #    DUR = "DUR", "Durante el viaje"
+    #    POST = "POST", "Después del viaje"
+    #class Remitente(models.TextChoices):
+    #    CLIENTE = "CLI", "Cliente"
+    #    HOTEL = "HOT", "Hotel"
+    #    GUIA = "GUI", "Guía"
+    #    AGENCIA = "AGE", "Agencia"
+    #    INTERNO = "INT", "Interno"
+    #    OTRO = "OTR", "Otro"
+    #class ViaContacto(models.TextChoices):
+    #    TELEFONO = "TEL", "Teléfono"
+    #    EMAIL = "EML", "Email"
+    #    WHATSAPP = "WHA", "WhatsApp"
+    #    OTRO = "OTR", "Otros"
+    #    # HappyFaces
+    #    # MyTryp
+    #class Pagador(models.TextChoices):
+    #    EMV = "EMV", "EMV"
+    #    CLIENTE = "CLI", "Cliente"
+    #    AGENCIA = "AGE", "Agencia"
+    #    NONE = "NON", "Nadie"
     #momento = models.CharField(
     #    max_length=5,
     #    choices=Momento.choices,
@@ -268,6 +291,13 @@ class IncidenciaCamposComunes(models.Model):
     #    verbose_name="Pagador",
     #    db_index=True,
     #)
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="%(class)ss",   # genérico para no chocar; no lo usarás en código
+        verbose_name="Reserva",
+        db_index=True,
+    )
     momento = models.ForeignKey(
         TipoMomento,
         on_delete=models.PROTECT,
@@ -285,6 +315,13 @@ class IncidenciaCamposComunes(models.Model):
         on_delete=models.PROTECT,
         verbose_name="Vía de contacto",
         db_index=True,
+    )
+    causa = models.ForeignKey(
+        TipoCausa,
+        on_delete=models.PROTECT,
+        verbose_name="Causa",
+        db_index=True,
+        null=True,
     )
     pagador = models.ForeignKey(
         TipoPagador,
@@ -325,6 +362,7 @@ class IncidenciaDemo(IncidenciaCamposComunes):
     Tiene la misma estructura que las que se van a aplicar, pero sin campos extra.
     """
     class Meta:
+        db_table = "core_incidencia_demo"
         verbose_name = "Incidencia (demo)"
         verbose_name_plural = "Incidencias (demo)"
 
@@ -354,6 +392,7 @@ class IncidenciaGuia(IncidenciaCamposComunes):
     otro = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "core_incidencia_guia"
         verbose_name = "Incidencia (guía)"
         verbose_name_plural = "Incidencias (guías)"
         ordering = ["-created_at"]
@@ -362,6 +401,7 @@ class Basico(models.Model):
     nombre = models.CharField(max_length=25, unique=True,)
 
     class Meta:
+        db_table = "core_basico"
         verbose_name = "Sector básico"
         verbose_name_plural = "Sectores básicos"
         ordering = ["nombre"]
@@ -405,6 +445,7 @@ class IncidenciaTransporte(IncidenciaCamposComunes):
     otro = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "core_incidencia_transporte"
         verbose_name = "Incidencia (transporte)"
         verbose_name_plural = "Incidencias (transportes)"
         ordering = ["-created_at"]
@@ -458,6 +499,7 @@ class IncidenciaHotel(IncidenciaCamposComunes):
     )
 
     class Meta:
+        db_table = "core_incidencia_hotel"
         verbose_name = "Incidencia (hotel)"
         verbose_name_plural = "Incidencias (hotel)"
         ordering = ["-created_at"]
@@ -496,8 +538,9 @@ class TipoTransferistaIncidencia(models.Model):
         - Otros
     """
     class Meta:
-        verbose_name = "Tipo de incidencia transferista"
-        verbose_name_plural = "Tipos de incidencia transferista"
+        db_table = "core_tipo_transferista_incidencia"
+        verbose_name = "Tipo (transferista - incidencia)"
+        verbose_name_plural = "Tipos (transferista - incidencia)"
         ordering = ["id"]
 
     def __str__(self):
@@ -518,8 +561,30 @@ class TipoTransferistaPunto(models.Model):
         - Hotel / Puerto marítimo
     """
     class Meta:
-        verbose_name = "Tipo de punto transferista"
-        verbose_name_plural = "Tipos de punto transferista"
+        db_table = "core_tipo_transferista_punto"
+        verbose_name = "Tipo (transferista - punto)"
+        verbose_name_plural = "Tipos (transferista - punto)"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
+class TipoTransferistaRazon(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Flight change
+        - Flight delay
+        - Lost Luggage
+        - Airport Service (Passport control, Luggage pick-up)
+        - PAX Error
+        - TSF Error
+        - Unknown                         (por defecto)
+    """
+    class Meta:
+        db_table = "core_tipo_transferista_razon"
+        verbose_name = "Tipo (transferista - razón)"
+        verbose_name_plural = "Tipos (transferista - razón)"
         ordering = ["id"]
 
     def __str__(self):
@@ -561,14 +626,14 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
 #        MISS_MEET = "MISS_MEET", "Encuentro no efectuado"
 #        OTHERS = "OTHERS", "Otros"
 #
-    class Causas(models.TextChoices):
-        FLT_DELAY = "FLT_DELAY", "Vuelo retrasado"
-        FLT_CHANGE = "FLT_CHANGE", "Cambio de vuelo"
-        LOST_BAGGAGE = "LOST_BAGGAGE", "Equipaje perdido"
-        APT_MGM = "APT_SVC_DELAY", "Administración aeropuerto"
-        PAX_ERROR = "PAX_ERROR", "Error PAX"
-        TRF_ERROR = "TRF_ERROR", "Error transferista"
-        UNKNOWN = "UNKNOWN", "Desconocido"
+#   class Causas(models.TextChoices):
+#       FLT_DELAY = "FLT_DELAY", "Vuelo retrasado"
+#       FLT_CHANGE = "FLT_CHANGE", "Cambio de vuelo"
+#       LOST_BAGGAGE = "LOST_BAGGAGE", "Equipaje perdido"
+#       APT_MGM = "APT_SVC_DELAY", "Administración aeropuerto"
+#       PAX_ERROR = "PAX_ERROR", "Error PAX"
+#       TRF_ERROR = "TRF_ERROR", "Error transferista"
+#       UNKNOWN = "UNKNOWN", "Desconocido"
 
     # fecha???
     ciudad = models.ForeignKey(
@@ -595,19 +660,26 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Incidencia",
         db_index=True,
     )
+    razon = models.ForeignKey(
+        TipoTransferistaRazon,
+        on_delete=models.PROTECT,
+        verbose_name="Razón",
+        db_index=True,
+    )
     #incidencia = models.CharField(
     #    max_length=20,
     #    verbose_name="Incidencia",
     #    choices=Incidencia.choices,
     #    db_index=True,
     #)
-    causa = models.CharField(
-        max_length=20,
-        verbose_name="Causa",
-        choices=Causas.choices,
-        db_index=True,
-    )
+    #causa = models.CharField(
+    #    max_length=20,
+    #    verbose_name="Causa",
+    #    choices=Causas.choices,
+    #    db_index=True,
+    #)
     class Meta:
+        db_table = "core_incidencia_transferista"
         verbose_name = "Incidencia (transferista)"
         verbose_name_plural = "Incidencias (transferista)"
         ordering = ["-created_at"]
@@ -646,30 +718,35 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
     )
 
     class Meta:
+        db_table = "core_incidencia_opcional"
         verbose_name = "Incidencia (opcional)"
         verbose_name_plural = "Incidencias (opcionales)"
         ordering = ["-created_at"]
 
-class IncidenciaMytrip(IncidenciaCamposComunes): # Autotipado
-    class Meta:
-        verbose_name = "Incidencia (mytrip)"
-        verbose_name_plural = "Incidencias (mytrip)"
-        ordering = ["-created_at"]
-
+#class IncidenciaMytrip(IncidenciaCamposComunes): # Autotipado
+#    class Meta:
+#        db_table = "core_incidencia_mytrip"
+#        verbose_name = "Incidencia (mytrip)"
+#        verbose_name_plural = "Incidencias (mytrip)"
+#        ordering = ["-created_at"]
+#
 #class IncidenciaItinerario(IncidenciaCamposComunes):
 #    class Meta:
+#        db_table = "core_incidencia_itinerario"
 #        verbose_name = "Incidencia (itinerario)"
 #        verbose_name_plural = "Incidencias (itinerarios)"
 #        ordering = ["-created_at"]
 #
 #class IncidenciaMonumento(IncidenciaCamposComunes):
 #    class Meta:
+#        db_table = "core_incidencia_monumento"
 #        verbose_name = "Incidencia (monumento)"
 #        verbose_name_plural = "Incidencias (monumentos)"
 #        ordering = ["-created_at"]
 #
 #class IncidenciaVueloIncluido(IncidenciaCamposComunes):
 #    class Meta:
-#        verbose_name = "Incidencia (vuelo)"
-#        verbose_name_plural = "Incidencias (vuelos)"
+#        db_table = "core_incidencia_vuelo_incluido"
+#        verbose_name = "Incidencia (vuelo incluido)"
+#        verbose_name_plural = "Incidencias (vuelos incluidos)"
 #        ordering = ["-created_at"]

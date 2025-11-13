@@ -6,7 +6,7 @@ from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
 from .models import Operador, Hotel, Guia, Ciudad, Basico
-from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador
+from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, TipoPagador
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcionales
 from django.core.validators import RegexValidator
@@ -37,7 +37,7 @@ class EmailAuthenticationForm(AuthenticationForm):
             raise forms.ValidationError("Correo o contraseña incorrectos.")
 
         return self.cleaned_data
-    
+
 #   ╔══════════╗
 #   ║ Reservas ║
 #   ╚══════════╝
@@ -81,6 +81,7 @@ class ReservaCrearForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ReservaCrearForm, self).__init__(*args, **kwargs)
+        # init del query
         self.fields["operador"].queryset = Operador.objects.filter(is_active=True).order_by("nombre")
 
 #   ╔═════════════╗
@@ -106,32 +107,18 @@ class IncidenciaCamposComunesForm(forms.Form):
         empty_label="---------",
         required=True,
     )
+    causa = forms.ModelChoiceField(
+        label="Causa",
+        queryset=TipoCausa.objects.none(),
+        empty_label="---------",
+        required=True,
+    )
     pagador = forms.ModelChoiceField(
         label="Pagador",
         queryset=TipoPagador.objects.none(),
         empty_label="---------",
         required=True,
     )
-    #momento = forms.ChoiceField(
-    #    label="Momento del viaje",
-    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.Momento.choices),
-    #    required=True,
-    #)
-    #remitente = forms.ChoiceField(
-    #    label="Remitente",
-    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.Remitente.choices),
-    #    required=True,
-    #)
-    #via = forms.ChoiceField(
-    #    label="Vía de contacto",
-    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.ViaContacto.choices),
-    #    required=True,
-    #)
-    #pagador = forms.ChoiceField(
-    #    label="Pagador",
-    #    choices=[("", "---------")] + list(IncidenciaCamposComunes.Pagador.choices),
-    #    required=True,
-    #)
     importe = forms.DecimalField(
         label="Importe (€)",
         min_value=0,
@@ -176,7 +163,7 @@ class IncidenciaGuiaForm(IncidenciaCamposComunesForm):
     field_order = [
         "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
         # Campos Comunes
-        "momento", "remitente", "via", "pagador", "importe", "comentario",
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -210,7 +197,7 @@ class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
     field_order = [
         "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
         # Campos Comunes
-        "momento", "remitente", "via", "pagador", "importe", "comentario",
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -247,11 +234,11 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
     other_personal = forms.BooleanField(label="PERSONAL", required=False, initial=False)
     other_lobby_size = forms.BooleanField(label="LOBBY SIZE", required=False, initial=False)
 
-    causa = forms.ChoiceField(
-        label="Causa",
-        choices=[("", "---------")] + [("HTL", "Error Hotel"), ("EMV", "Error EMV"), ("UNK", "Desconocido"),],
-        required=True,
-    )
+    #causa = forms.ChoiceField(
+    #    label="Causa",
+    #    choices=[("", "---------")] + [("HTL", "Error Hotel"), ("EMV", "Error EMV"), ("UNK", "Desconocido"),],
+    #    required=True,
+    #)
 
     field_order = [
         "hotel",
@@ -259,9 +246,8 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         "room_amenity", "room_maintenance", "restaurant_personal", "restaurant_quantity",
         "restaurant_quality", "reserve_non_booking", "reserve_city_tax", "reserve_location",
         "other_personal", "other_lobby_size",
-        "causa",
         # Campos Comunes
-        "momento", "remitente", "via", "pagador", "importe", "comentario",
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -269,31 +255,31 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         self.fields["hotel"].queryset = Hotel.objects.all().order_by("nombre")
 
 class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
-    ciudad = forms.ModelChoiceField(
-        queryset=Ciudad.objects.none(),
-        label="Ciudad",
-        required=True,
-        empty_label="Selecciona una ciudad",)
-    punto = forms.ChoiceField(
-        label="Punto",
-        choices=[("", "---------")] + list(IncidenciaTransferista.Puto.choices),
-        required=True,
-    )
-    incidencia = forms.ChoiceField(
-        label="Incidencia",
-        choices=[("", "---------")] + list(IncidenciaTransferista.Incidencia.choices),
-        required=True,
-    )
-    causa = forms.ChoiceField(
-        label = "Causa",
-        choices=[("", "---------")] + list(IncidenciaTransferista.Causas.choices),
-        required=True,
-    )
+    #ciudad = forms.ModelChoiceField(
+    #    queryset=Ciudad.objects.none(),
+    #    label="Ciudad",
+    #    required=True,
+    #    empty_label="Selecciona una ciudad",)
+    #punto = forms.ChoiceField(
+    #    label="Punto",
+    #    choices=[("", "---------")] + list(IncidenciaTransferista.Puto.choices),
+    #    required=True,
+    #)
+    #incidencia = forms.ChoiceField(
+    #    label="Incidencia",
+    #    choices=[("", "---------")] + list(IncidenciaTransferista.Incidencia.choices),
+    #    required=True,
+    #)
+    #causa = forms.ChoiceField(
+    #    label = "Causa",
+    #    choices=[("", "---------")] + list(IncidenciaTransferista.Causas.choices),
+    #    required=True,
+    #)
 
     field_order = [
-        "ciudad", "punto", "incidencia", "causa",
+        "ciudad", "punto", "incidencia",
         # Campos Comunes
-        "momento", "remitente", "via", "pagador", "importe", "comentario",
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -315,7 +301,7 @@ class IncidenciaOpcionalesForm(IncidenciaCamposComunesForm):
     field_order = [
         "ciudad", "incidencia",
         # Campos Comunes
-        "momento", "remitente", "via", "pagador", "importe", "comentario",
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
