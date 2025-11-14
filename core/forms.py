@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate                # ╚═════
 from .models import Operador, Hotel, Guia, Ciudad, Basico
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, TipoPagador
 from .models import IncidenciaCamposComunes
-from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcionales
+from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -286,7 +286,7 @@ class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
         super().__init__(*args, **kwargs)
         self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
 
-class IncidenciaOpcionalesForm(IncidenciaCamposComunesForm):
+class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     ciudad = forms.ModelChoiceField(
         queryset=Ciudad.objects.none(),
         label="Ciudad",
@@ -294,7 +294,7 @@ class IncidenciaOpcionalesForm(IncidenciaCamposComunesForm):
         empty_label="Selecciona una ciudad",)
     incidencia = forms.ChoiceField(
         label="Incidencia",
-        choices=[("", "---------")] + list(IncidenciaOpcionales.Incidencia.choices),
+        choices=[("", "---------")] + list(IncidenciaOpcional.Incidencia.choices),
         required=True,
     )
 

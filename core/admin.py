@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Pais, Ciudad
 from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
-from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcionales
+from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional
 
 # Register your models here.
 
@@ -93,8 +93,8 @@ class IncidenciaTransferistaAdmin(admin.ModelAdmin):
     )
     ordering = ["-created_at"]
 
-@admin.register(IncidenciaOpcionales)
-class IncidenciaOpcionalesAdmin(admin.ModelAdmin):
+@admin.register(IncidenciaOpcional)
+class IncidenciaOpcionalAdmin(admin.ModelAdmin):
     list_display = (
         "reserva",
         "ciudad", "incidencia",

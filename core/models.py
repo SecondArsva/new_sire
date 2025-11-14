@@ -70,7 +70,7 @@ class Reserva(models.Model):
         Operador,
         on_delete=models.PROTECT,
         related_name="reservas",
-        verbose_name="Operador"
+        verbose_name="Operador",
     )
     fecha_inicio = models.DateField(verbose_name="Fecha de inicio")
 
@@ -373,13 +373,13 @@ class IncidenciaGuia(IncidenciaCamposComunes):
         Reserva,
         on_delete=models.PROTECT,
         related_name="incidencias_guia",
-        verbose_name="Reserva"
+        verbose_name="Reserva",
     )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         related_name="incidencias_guia_creadas",
-        verbose_name="Creado por"
+        verbose_name="Creado por",
     )
     # Campos propios de los guías.
     guia = models.ForeignKey(Guia, on_delete=models.PROTECT)
@@ -684,22 +684,22 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (transferista)"
         ordering = ["-created_at"]
 
-class IncidenciaOpcionales(IncidenciaCamposComunes):
+class IncidenciaOpcional(IncidenciaCamposComunes):
     # Sobreescritura del padre
     reserva = models.ForeignKey(
         Reserva,
         on_delete=models.PROTECT,
-        related_name="incidencias_opcionales",
+        related_name="incidencias_opcional",
         verbose_name="Reserva"
     )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
-        related_name="incidencias_opcionales_creadas",
+        related_name="incidencias_opcional_creadas",
         verbose_name="Creado por"
     )
 
-    class Incidencia(models.TextChoices):
+    class Incidencia(models.TextChoices): # TODO
         NO_REALIZADO = "NRL", "No realizado"
         CALIDAD = "QLT", "Calidad del servicio"
         IMPAGO = "IMP", "Impago"
@@ -724,6 +724,19 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
         ordering = ["-created_at"]
 
 #class IncidenciaMytrip(IncidenciaCamposComunes): # Autotipado
+#    # Sobreescritura del padre
+#    reserva = models.ForeignKey(
+#        Reserva,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_mytrip",
+#        verbose_name="Reserva"
+#    )
+#    created_by = models.ForeignKey(
+#        settings.AUTH_USER_MODEL,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_mytrip_creadas",
+#        verbose_name="Creado por"
+#    )
 #    class Meta:
 #        db_table = "core_incidencia_mytrip"
 #        verbose_name = "Incidencia (mytrip)"
@@ -731,6 +744,19 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
 #        ordering = ["-created_at"]
 #
 #class IncidenciaItinerario(IncidenciaCamposComunes):
+#    # Sobreescritura del padre
+#    reserva = models.ForeignKey(
+#        Reserva,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_itinerario",
+#        verbose_name="Reserva"
+#    )
+#    created_by = models.ForeignKey(
+#        settings.AUTH_USER_MODEL,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_itinerario_creadas",
+#        verbose_name="Creado por"
+#    )
 #    class Meta:
 #        db_table = "core_incidencia_itinerario"
 #        verbose_name = "Incidencia (itinerario)"
@@ -738,6 +764,19 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
 #        ordering = ["-created_at"]
 #
 #class IncidenciaMonumento(IncidenciaCamposComunes):
+#    # Sobreescritura del padre
+#    reserva = models.ForeignKey(
+#        Reserva,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_monumento",
+#        verbose_name="Reserva"
+#    )
+#    created_by = models.ForeignKey(
+#        settings.AUTH_USER_MODEL,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_monumento_creadas",
+#        verbose_name="Creado por"
+#    )
 #    class Meta:
 #        db_table = "core_incidencia_monumento"
 #        verbose_name = "Incidencia (monumento)"
@@ -745,6 +784,19 @@ class IncidenciaOpcionales(IncidenciaCamposComunes):
 #        ordering = ["-created_at"]
 #
 #class IncidenciaVueloIncluido(IncidenciaCamposComunes):
+#    # Sobreescritura del padre
+#    reserva = models.ForeignKey(
+#        Reserva,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_vuelo_incluido",
+#        verbose_name="Reserva"
+#    )
+#    created_by = models.ForeignKey(
+#        settings.AUTH_USER_MODEL,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_vuelo_incluido_creadas",
+#        verbose_name="Creado por"
+#    )
 #    class Meta:
 #        db_table = "core_incidencia_vuelo_incluido"
 #        verbose_name = "Incidencia (vuelo incluido)"
