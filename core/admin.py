@@ -4,6 +4,8 @@ from .models import Pais, Ciudad
 from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional
+from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa
+from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon, TipoOpcionalIncidencia
 
 # Register your models here.
 
@@ -31,7 +33,7 @@ class HotelAdmin(admin.ModelAdmin):
 @admin.register(IncidenciaDemo)
 class IncidenciaDemo(admin.ModelAdmin):
     list_display = (
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
+        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ['-created_at']
@@ -47,7 +49,7 @@ class IncidenciaGuiaAdmin(admin.ModelAdmin):
         'reserva',
         "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
+        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
 
@@ -57,7 +59,7 @@ class IncidenciaTransporteAdmin(admin.ModelAdmin):
         'reserva',
         "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
+        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
 
@@ -77,7 +79,7 @@ class IncidenciaHotelAdmin(admin.ModelAdmin):
         "other_personal", "other_lobby_size",
         "causa",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
+        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ["-created_at"]
@@ -88,7 +90,7 @@ class IncidenciaTransferistaAdmin(admin.ModelAdmin):
         'reserva',
         "ciudad", "punto", "incidencia", "causa",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
+        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ["-created_at"]
@@ -99,7 +101,52 @@ class IncidenciaOpcionalAdmin(admin.ModelAdmin):
         "reserva",
         "ciudad", "incidencia",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at',
+        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ["-created_at"]
+
+@admin.register(TipoMomento)
+class TipoMomentoAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoRemitente)
+class TipoRemitenteAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoViaContacto)
+class TipoViaContactoAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoPagador)
+class TipoPagadorAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoCausa)
+class TipoCausaAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoTransferistaIncidencia)
+class TipoTransferistaIncidenciaAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoTransferistaPunto)
+class TipoTransferistaPuntoAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoTransferistaRazon)
+class TipoTransferistaRazonAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(TipoOpcionalIncidencia)
+class TipoOpcionalIncidenciaAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]

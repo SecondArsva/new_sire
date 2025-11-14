@@ -9,6 +9,7 @@ from .models import Operador, Hotel, Guia, Ciudad, Basico
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, TipoPagador
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
+from .models import TipoOpcionalIncidencia
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -140,6 +141,7 @@ class IncidenciaCamposComunesForm(forms.Form):
         self.fields["remitente"].queryset = TipoRemitente.objects.all().order_by("id")
         self.fields["via"].queryset = TipoViaContacto.objects.all().order_by("id")
         self.fields["pagador"].queryset = TipoPagador.objects.all().order_by("id")
+        self.fields["causa"].queryset = TipoCausa.objects.all().order_by("id")
 
 class IncidenciaDemoForm(IncidenciaCamposComunesForm):
     """Demostración de la herencia, sin campos añadidos.""" # Celia Juver Cruz'nt lol
@@ -292,9 +294,11 @@ class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
         label="Ciudad",
         required=True,
         empty_label="Selecciona una ciudad",)
-    incidencia = forms.ChoiceField(
+    
+    incidencia = forms.ModelChoiceField(
         label="Incidencia",
-        choices=[("", "---------")] + list(IncidenciaOpcional.Incidencia.choices),
+        queryset=TipoOpcionalIncidencia.objects.all(),
+        empty_label="---------",
         required=True,
     )
 

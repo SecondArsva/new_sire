@@ -152,11 +152,13 @@ class TipoRemitente(models.Model):
     nombre = models.CharField(max_length=50, unique=True,)
     """
     Opciones:
-        - Cliente
-        - Hotel
+        - Pasajero
+        - Operador
+        - Minorista
         - Guía
-        - Agencia
-        - Interno
+        - Transferista
+        - Receptivo
+        - Departamento Interno
         - Otro
     """
     class Meta:
@@ -208,10 +210,10 @@ class TipoCausa(models.Model):
     nombre = models.CharField(max_length=50, unique=True,)
     """
     Opciones:
-        - by EMV
-        - by PAX
-        - by OPERATOR
-        - by DMC
+        - EMV
+        - PAX
+        - OPERATOR
+        - DMC (Destination Management Company)
         - UNKNOWN
         - ¿¿¿ INFO ???
         - ¿¿¿ CONGRATS ???
@@ -222,8 +224,8 @@ class TipoCausa(models.Model):
 
     class Meta:
         db_table = "core_tipo_causa"
-        verbose_name = "Tipo (vías de contacto)"
-        verbose_name_plural = "Tipos (vías de contacto)"
+        verbose_name = "Tipo (causa)"
+        verbose_name_plural = "Tipos (causas)"
         ordering = ["id"]
 
     def __str__(self):
@@ -684,6 +686,23 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (transferista)"
         ordering = ["-created_at"]
 
+class TipoOpcionalIncidencia(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - No realizado
+        - Calidad del servicio
+        - Impago
+    """
+    class Meta:
+        db_table = "core_tipo_opcional_incidencia"
+        verbose_name = "Tipo (opcional - incidencia)"
+        verbose_name_plural = "Tipos (opcional - incidencia)"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
 class IncidenciaOpcional(IncidenciaCamposComunes):
     # Sobreescritura del padre
     reserva = models.ForeignKey(
@@ -699,20 +718,21 @@ class IncidenciaOpcional(IncidenciaCamposComunes):
         verbose_name="Creado por"
     )
 
-    class Incidencia(models.TextChoices): # TODO
-        NO_REALIZADO = "NRL", "No realizado"
-        CALIDAD = "QLT", "Calidad del servicio"
-        IMPAGO = "IMP", "Impago"
-
     ciudad = models.ForeignKey(
         Ciudad,
         on_delete=models.PROTECT,
         verbose_name="Ciudad",
         related_name="incidencias_opcionales",
     )
-    incidencia = models.CharField(
-        max_length=3,
-        choices=Incidencia.choices,
+    #incidencia = models.CharField(
+    #    max_length=3,
+    #    choices=Incidencia.choices,
+    #    verbose_name="Incidencia",
+    #    db_index=True,
+    #)
+    incidencia = models.ForeignKey(
+        TipoOpcionalIncidencia,
+        on_delete=models.PROTECT,
         verbose_name="Incidencia",
         db_index=True,
     )
@@ -802,3 +822,7 @@ class IncidenciaOpcional(IncidenciaCamposComunes):
 #        verbose_name = "Incidencia (vuelo incluido)"
 #        verbose_name_plural = "Incidencias (vuelos incluidos)"
 #        ordering = ["-created_at"]
+#
+# GRAND FINALE:
+#       NO TOQUES UNA MIERDA DE LOS MODELOS
+#                                           ʕ•ᴥ•ʔ
