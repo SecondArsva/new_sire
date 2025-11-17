@@ -309,3 +309,21 @@ class IncidenciaOtroForm(IncidenciaCamposComunesForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["incidencia"].queryset = TipoOtroIncidencia.objects.all().order_by("nombre")
+
+class IncidenciaMonumentoForm(IncidenciaCamposComunesForm):
+    ciudad = forms.ModelChoiceField(
+        label="Ciudad",
+        queryset=Ciudad.objects.all(),
+        empty_label="---------",
+        required=True,
+    )
+
+    field_order = [
+        "ciudad",
+        # Campos Comunes
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")

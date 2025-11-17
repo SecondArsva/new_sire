@@ -6,10 +6,12 @@ from django.contrib.auth.decorators import login_required # Autenticación
 from django.contrib import messages
 #FORMS
 from .forms import ReservaBuscarForm, ReservaCrearForm
-from .forms import IncidenciaDemoForm, IncidenciaGuiaForm, IncidenciaTransporteForm, IncidenciasHotelForm, IncidenciaTransferistaForm, IncidenciaOpcionalForm, IncidenciaOtroForm
+from .forms import IncidenciaDemoForm, IncidenciaGuiaForm, IncidenciaTransporteForm, IncidenciasHotelForm, IncidenciaTransferistaForm
+from .forms import IncidenciaMonumentoForm, IncidenciaOpcionalForm, IncidenciaOtroForm
 #MODELS
 from .models import Reserva
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional, IncidenciaOtro
+from .models import IncidenciaMonumento
 # Para el handler jsonable
 from decimal import Decimal
 from django.db.models import Model
@@ -265,6 +267,7 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
         "transferista": (IncidenciaTransferistaForm, IncidenciaTransferista, "Incidencia Transferista"),
         "opcionales": (IncidenciaOpcionalForm, IncidenciaOpcional, "Incidencia Opcionales"),
         "otro": (IncidenciaOtroForm, IncidenciaOtro, "Incidencia Otros"),
+        "monumento": (IncidenciaMonumentoForm, IncidenciaMonumento, "Incidencia Monumento"),
     }
     if tipo not in FORM_MAP:
         print(f"Tipo no valido: {tipo}")

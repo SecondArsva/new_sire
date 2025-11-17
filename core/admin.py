@@ -4,7 +4,7 @@ from .models import Pais, Ciudad
 from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional, IncidenciaOtro
-from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia
+from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia, IncidenciaMonumento
 from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon, TipoOpcionalIncidencia
 
 # Register your models here.
@@ -158,6 +158,15 @@ class IncidenciaOtroAdmin(admin.ModelAdmin):
     list_display=(
         'reserva',
         'incidencia',
+        # Campos Comunes
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
+        'comentario',
+    )
+
+@admin.register(IncidenciaMonumento)
+class IncidenciaMonumentoAdmin(admin.ModelAdmin):
+    list_display=(
+        'ciudad',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',

@@ -581,36 +581,6 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Creado por"
     )
 
-#    class Puto(models.TextChoices):
-#        APT_HTL = "APT/HTL", "Aeropuerto / Hotel"
-#        HTL_APT = "HTL/APT", "Hotel / Aeropuerto"
-#
-#        TER_HTL = "TER/HTL", "Terminal de buses / Hotel"
-#        HTL_TER = "HTL/TER", "Hotel / Terminal de buses"
-#
-#        HTL_HTL = "HTL/HTL", "Hotel / Hotel"
-#
-#        STN_HTL = "STN/HTL", "Estación de tren / Hotel"
-#        HTL_STN = "HTL/STN", "Hotel / Estación de tren"
-#
-#        PRT_HTL = "PRT/HTL", "Puerto marítimo / Hotel"
-#        HTL_PRT = "HTL/PRT", "Hotel / Puerto marítimo"
-#
-#    class Incidencia(models.TextChoices):
-#        PAX_NO_SHOW = "PAX_NO_SHOW", "Pasajero ausente"
-#        TRF_ERROR = "TRF_ERROR", "Error del transferista"
-#        MISS_MEET = "MISS_MEET", "Encuentro no efectuado"
-#        OTHERS = "OTHERS", "Otros"
-#
-#   class Causas(models.TextChoices):
-#       FLT_DELAY = "FLT_DELAY", "Vuelo retrasado"
-#       FLT_CHANGE = "FLT_CHANGE", "Cambio de vuelo"
-#       LOST_BAGGAGE = "LOST_BAGGAGE", "Equipaje perdido"
-#       APT_MGM = "APT_SVC_DELAY", "Administración aeropuerto"
-#       PAX_ERROR = "PAX_ERROR", "Error PAX"
-#       TRF_ERROR = "TRF_ERROR", "Error transferista"
-#       UNKNOWN = "UNKNOWN", "Desconocido"
-
     # fecha???
     ciudad = models.ForeignKey(
         Ciudad,
@@ -786,26 +756,33 @@ class IncidenciaOtro(IncidenciaCamposComunes):
 #        verbose_name_plural = "Incidencias (itinerarios)"
 #        ordering = ["-created_at"]
 #
-#class IncidenciaMonumento(IncidenciaCamposComunes):
-#    # Sobreescritura del padre
-#    reserva = models.ForeignKey(
-#        Reserva,
-#        on_delete=models.PROTECT,
-#        related_name="incidencias_monumento",
-#        verbose_name="Reserva"
-#    )
-#    created_by = models.ForeignKey(
-#        settings.AUTH_USER_MODEL,
-#        on_delete=models.PROTECT,
-#        related_name="incidencias_monumento_creadas",
-#        verbose_name="Creado por"
-#    )
-#    class Meta:
-#        db_table = "core_incidencia_monumento"
-#        verbose_name = "Incidencia (monumento)"
-#        verbose_name_plural = "Incidencias (monumentos)"
-#        ordering = ["-created_at"]
-#
+class IncidenciaMonumento(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_monumento",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_monumento_creadas",
+        verbose_name="Creado por"
+    )
+    ciudad = models.ForeignKey(
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad",
+        related_name="incidencias_monumento",
+    )
+
+    class Meta:
+        db_table = "core_incidencia_monumento"
+        verbose_name = "Incidencia (monumento)"
+        verbose_name_plural = "Incidencias (monumentos)"
+        ordering = ["-created_at"]
+
 #class IncidenciaVueloIncluido(IncidenciaCamposComunes):
 #    # Sobreescritura del padre
 #    reserva = models.ForeignKey(
