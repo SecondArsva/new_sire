@@ -73,10 +73,7 @@ class IncidenciaHotelAdmin(admin.ModelAdmin):
     list_display=(
         'reserva',
         "hotel",
-        "room_key", "room_clean", "room_size", "room_bed_type", "room_facility",
-        "room_amenity", "room_maintenance", "restaurant_personal", "restaurant_quantity",
-        "restaurant_quality", "reserve_non_booking", "reserve_city_tax", "reserve_location",
-        "other_personal", "other_lobby_size",
+        "habitacion", "reserva", "restaurante", "otro",
         "causa",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',

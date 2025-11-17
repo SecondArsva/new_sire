@@ -9,6 +9,7 @@ from .models import Operador, Hotel, Guia, Ciudad, Basico
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, TipoPagador
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
+from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon
 from .models import TipoOpcionalIncidencia, TipoOtroIncidencia
 from django.core.validators import RegexValidator
 
@@ -216,38 +217,14 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         empty_label="Nombre del hotel",
     )
     # Tipos de incidencia
-    # ROOM
-    room_key = forms.BooleanField(label="ROOM_KEY", required=False, initial=False)
-    room_clean = forms.BooleanField(label="ROOM_CLEAN", required=False, initial=False)
-    room_size = forms.BooleanField(label="ROOM_SIZE", required=False, initial=False)
-    room_bed_type = forms.BooleanField(label="ROOM_BED_TYPE", required=False, initial=False)
-    room_facility = forms.BooleanField(label="ROOM_FACILITY", required=False, initial=False)
-    room_amenity = forms.BooleanField(label="ROOM_AMENITY", required=False, initial=False)
-    room_maintenance = forms.BooleanField(label="ROOM_MAINTENANCE", required=False, initial=False)
-    # RESTAURANTE
-    restaurant_personal = forms.BooleanField(label="RESTAURANT_PERSONAL", required=False, initial=False)
-    restaurant_quantity = forms.BooleanField(label="RESTAURANT_QUANTITY", required=False, initial=False)
-    restaurant_quality = forms.BooleanField(label="RESTAURANT_QUALITY", required=False, initial=False)
-    # RESERVA
-    reserve_non_booking = forms.BooleanField(label="RESERVE_NON_BOOKING", required=False, initial=False)
-    reserve_city_tax = forms.BooleanField(label="RESERVE_CITY_TAX", required=False, initial=False)
-    reserve_location = forms.BooleanField(label="RESERVE_LOCATION", required=False, initial=False)
-    # OTROS
-    other_personal = forms.BooleanField(label="OTHER_PERSONAL", required=False, initial=False)
-    other_lobby_size = forms.BooleanField(label="OTHER_LOBBY_SIZE", required=False, initial=False)
-
-    #causa = forms.ChoiceField(
-    #    label="Causa",
-    #    choices=[("", "---------")] + [("HTL", "Error Hotel"), ("EMV", "Error EMV"), ("UNK", "Desconocido"),],
-    #    required=True,
-    #)
+    habitacion = forms.BooleanField(label="ROOM", required=False, initial=False)
+    reserva = forms.BooleanField(label="RESERVE", required=False, initial=False)
+    restaurante = forms.BooleanField(label="RESTAURANT", required=False, initial=False)
+    otro = forms.BooleanField(label="OTHER", required=False, initial=False)
 
     field_order = [
         "hotel",
-        "room_key", "room_clean", "room_size", "room_bed_type", "room_facility",
-        "room_amenity", "room_maintenance", "restaurant_personal", "restaurant_quantity",
-        "restaurant_quality", "reserve_non_booking", "reserve_city_tax", "reserve_location",
-        "other_personal", "other_lobby_size",
+        "habitacion", "reserva", "restaurante", "otro",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
@@ -257,29 +234,29 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
         self.fields["hotel"].queryset = Hotel.objects.all().order_by("nombre")
 
 class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
-    #ciudad = forms.ModelChoiceField(
-    #    queryset=Ciudad.objects.none(),
-    #    label="Ciudad",
-    #    required=True,
-    #    empty_label="Selecciona una ciudad",)
-    #punto = forms.ChoiceField(
-    #    label="Punto",
-    #    choices=[("", "---------")] + list(IncidenciaTransferista.Puto.choices),
-    #    required=True,
-    #)
-    #incidencia = forms.ChoiceField(
-    #    label="Incidencia",
-    #    choices=[("", "---------")] + list(IncidenciaTransferista.Incidencia.choices),
-    #    required=True,
-    #)
-    #causa = forms.ChoiceField(
-    #    label = "Causa",
-    #    choices=[("", "---------")] + list(IncidenciaTransferista.Causas.choices),
-    #    required=True,
-    #)
+    ciudad = forms.ModelChoiceField(
+        queryset=Ciudad.objects.none(),
+        label="Ciudad",
+        required=True,
+        empty_label="---------",)
+    incidencia = forms.ModelChoiceField(
+        queryset=TipoTransferistaIncidencia.objects.none(),
+        label="Incidencia",
+        required=True,
+        empty_label="---------",)
+    punto = forms.ModelChoiceField(
+        queryset=TipoTransferistaPunto.objects.none(),
+        label="Punto",
+        required=True,
+        empty_label="---------",)
+    razon = forms.ModelChoiceField(
+        queryset=TipoTransferistaRazon.objects.none(),
+        label="Razón",
+        required=True,
+        empty_label="---------",)
 
     field_order = [
-        "ciudad", "punto", "incidencia",
+        "ciudad", "incidencia", "punto", "razon",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
@@ -287,6 +264,9 @@ class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
+        self.fields["incidencia"].queryset = TipoTransferistaIncidencia.objects.all().order_by("id")
+        self.fields["punto"].queryset = TipoTransferistaPunto.objects.all().order_by("id")
+        self.fields["razon"].queryset = TipoTransferistaRazon.objects.all().order_by("id")
 
 class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     ciudad = forms.ModelChoiceField(

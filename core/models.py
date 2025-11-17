@@ -342,7 +342,7 @@ class IncidenciaCamposComunes(models.Model):
     comentario = models.TextField(
         max_length=500,
         verbose_name="Comentario",
-        help_text="Información adicional del caso (máx. 1000)"
+        help_text="Información adicional del caso (máx. 500)"
     )
 
     created_by = models.ForeignKey(
@@ -469,36 +469,10 @@ class IncidenciaHotel(IncidenciaCamposComunes):
     # Campos de Hotel
     hotel = models.ForeignKey(Hotel, on_delete=models.PROTECT)
     # Tipos de incidencia
-    # ROOM
-    room_key = models.BooleanField(default=False)
-    room_clean = models.BooleanField(default=False)
-    room_size = models.BooleanField(default=False)
-    room_bed_type = models.BooleanField(default=False)
-    room_facility = models.BooleanField(default=False)
-    room_amenity = models.BooleanField(default=False)
-    room_maintenance = models.BooleanField(default=False)
-    # RESTAURANTE
-    restaurant_personal = models.BooleanField(default=False)
-    restaurant_quantity = models.BooleanField(default=False)
-    restaurant_quality = models.BooleanField(default=False)
-    # RESERVA
-    reserve_non_booking = models.BooleanField(default=False)
-    reserve_city_tax = models.BooleanField(default=False)
-    reserve_location = models.BooleanField(default=False)
-    # OTROS
-    other_personal = models.BooleanField(default=False)
-    other_lobby_size = models.BooleanField(default=False)
-
-    causa = models.CharField(
-        max_length=3,
-        choices=[
-            ("HTL", "Error Hotel"),
-            ("EMV", "Error EMV"),
-            ("UNK", "Desconocido"),
-        ],
-        verbose_name="Causa (Hotel)",
-        db_index=True,
-    )
+    habitacion = models.BooleanField(default=False)
+    reserva = models.BooleanField(default=False)
+    restaurante = models.BooleanField(default=False)
+    otro = models.BooleanField(default=False)
 
     class Meta:
         db_table = "core_incidencia_hotel"
@@ -644,22 +618,16 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Ciudad",
         related_name="incidencias_transferista",
     )
-    #punto = models.CharField(
-    #    max_length=7,
-    #    verbose_name="Punto del transfer",
-    #    choices=Puto.choices,
-    #    db_index=True,
-    #)
-    punto = models.ForeignKey(
-        TipoTransferistaPunto,
-        on_delete=models.PROTECT,
-        verbose_name="Punto del viaje",
-        db_index=True,
-    )
     incidencia = models.ForeignKey(
         TipoTransferistaIncidencia,
         on_delete=models.PROTECT,
         verbose_name="Incidencia",
+        db_index=True,
+    )
+    punto = models.ForeignKey(
+        TipoTransferistaPunto,
+        on_delete=models.PROTECT,
+        verbose_name="Punto del viaje",
         db_index=True,
     )
     razon = models.ForeignKey(
@@ -668,18 +636,7 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Razón",
         db_index=True,
     )
-    #incidencia = models.CharField(
-    #    max_length=20,
-    #    verbose_name="Incidencia",
-    #    choices=Incidencia.choices,
-    #    db_index=True,
-    #)
-    #causa = models.CharField(
-    #    max_length=20,
-    #    verbose_name="Causa",
-    #    choices=Causas.choices,
-    #    db_index=True,
-    #)
+    
     class Meta:
         db_table = "core_incidencia_transferista"
         verbose_name = "Incidencia (transferista)"
