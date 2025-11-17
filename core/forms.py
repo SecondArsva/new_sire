@@ -9,7 +9,7 @@ from .models import Operador, Hotel, Guia, Ciudad, Basico
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, TipoPagador
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
-from .models import TipoOpcionalIncidencia
+from .models import TipoOpcionalIncidencia, TipoOtroIncidencia
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -217,24 +217,24 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
     )
     # Tipos de incidencia
     # ROOM
-    room_key = forms.BooleanField(label="KEY", required=False, initial=False)
-    room_clean = forms.BooleanField(label="CLEAN", required=False, initial=False)
-    room_size = forms.BooleanField(label="SIZE", required=False, initial=False)
-    room_bed_type = forms.BooleanField(label="BED TYPE", required=False, initial=False)
-    room_facility = forms.BooleanField(label="FACILITY", required=False, initial=False)
-    room_amenity = forms.BooleanField(label="AMENITY", required=False, initial=False)
-    room_maintenance = forms.BooleanField(label="MAINTENANCE", required=False, initial=False)
+    room_key = forms.BooleanField(label="ROOM_KEY", required=False, initial=False)
+    room_clean = forms.BooleanField(label="ROOM_CLEAN", required=False, initial=False)
+    room_size = forms.BooleanField(label="ROOM_SIZE", required=False, initial=False)
+    room_bed_type = forms.BooleanField(label="ROOM_BED_TYPE", required=False, initial=False)
+    room_facility = forms.BooleanField(label="ROOM_FACILITY", required=False, initial=False)
+    room_amenity = forms.BooleanField(label="ROOM_AMENITY", required=False, initial=False)
+    room_maintenance = forms.BooleanField(label="ROOM_MAINTENANCE", required=False, initial=False)
     # RESTAURANTE
-    restaurant_personal = forms.BooleanField(label="PARSONAL", required=False, initial=False)
-    restaurant_quantity = forms.BooleanField(label="QUANTITY", required=False, initial=False)
-    restaurant_quality = forms.BooleanField(label="QUALITY", required=False, initial=False)
+    restaurant_personal = forms.BooleanField(label="RESTAURANT_PERSONAL", required=False, initial=False)
+    restaurant_quantity = forms.BooleanField(label="RESTAURANT_QUANTITY", required=False, initial=False)
+    restaurant_quality = forms.BooleanField(label="RESTAURANT_QUALITY", required=False, initial=False)
     # RESERVA
-    reserve_non_booking = forms.BooleanField(label="NON BOOKING", required=False, initial=False)
-    reserve_city_tax = forms.BooleanField(label="CITY TAX", required=False, initial=False)
-    reserve_location = forms.BooleanField(label="LOCATION", required=False, initial=False)
+    reserve_non_booking = forms.BooleanField(label="RESERVE_NON_BOOKING", required=False, initial=False)
+    reserve_city_tax = forms.BooleanField(label="RESERVE_CITY_TAX", required=False, initial=False)
+    reserve_location = forms.BooleanField(label="RESERVE_LOCATION", required=False, initial=False)
     # OTROS
-    other_personal = forms.BooleanField(label="PERSONAL", required=False, initial=False)
-    other_lobby_size = forms.BooleanField(label="LOBBY SIZE", required=False, initial=False)
+    other_personal = forms.BooleanField(label="OTHER_PERSONAL", required=False, initial=False)
+    other_lobby_size = forms.BooleanField(label="OTHER_LOBBY_SIZE", required=False, initial=False)
 
     #causa = forms.ChoiceField(
     #    label="Causa",
@@ -311,3 +311,21 @@ class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
+
+class IncidenciaOtroForm(IncidenciaCamposComunesForm):
+    incidencia = forms.ModelChoiceField(
+        label="Incidencia",
+        queryset=TipoOtroIncidencia.objects.all(),
+        empty_label="---------",
+        required=True,
+    )
+
+    field_order = [
+        "incidencia",
+        # Campos Comunes
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["incidencia"].queryset = TipoOtroIncidencia.objects.all().order_by("nombre")

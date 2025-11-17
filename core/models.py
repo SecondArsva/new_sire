@@ -743,6 +743,52 @@ class IncidenciaOpcional(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (opcionales)"
         ordering = ["-created_at"]
 
+class TipoOtroIncidencia(models.Model):
+    nombre = models.CharField(max_length=50, unique=True,)
+    """
+    Opciones:
+        - Causa médica
+        - Robo / hurto
+        - Objeto perdido / olvidado
+        - Otro
+    """
+    class Meta:
+        db_table = "core_tipo_otro_incidencia"
+        verbose_name = "Tipo (otro - incidencia)"
+        verbose_name_plural = "Tipos (otro - incidencia)"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.nombre
+
+class IncidenciaOtro(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_otro",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_otro_creadas",
+        verbose_name="Creado por"
+    )
+    incidencia = models.ForeignKey(
+        TipoOtroIncidencia,
+        on_delete=models.PROTECT,
+        verbose_name="Incidencia",
+        db_index=True,
+    )
+    
+    class Meta:
+        db_table = "core_incidencia_otro"
+        verbose_name = "Incidencia (otro)"
+        verbose_name_plural = "Incidencias (otro)"
+        ordering = ["-created_at"]
+
+
 #class IncidenciaMytrip(IncidenciaCamposComunes): # Autotipado
 #    # Sobreescritura del padre
 #    reserva = models.ForeignKey(
@@ -823,6 +869,4 @@ class IncidenciaOpcional(IncidenciaCamposComunes):
 #        verbose_name_plural = "Incidencias (vuelos incluidos)"
 #        ordering = ["-created_at"]
 #
-# GRAND FINALE:
-#       NO TOQUES UNA MIERDA DE LOS MODELOS
-#                                           ʕ•ᴥ•ʔ
+# ʕ•ᴥ•ʔ

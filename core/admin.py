@@ -3,8 +3,8 @@ from django.contrib import admin
 from .models import Pais, Ciudad
 from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
-from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional
-from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa
+from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional, IncidenciaOtro
+from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia
 from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon, TipoOpcionalIncidencia
 
 # Register your models here.
@@ -33,7 +33,7 @@ class HotelAdmin(admin.ModelAdmin):
 @admin.register(IncidenciaDemo)
 class IncidenciaDemo(admin.ModelAdmin):
     list_display = (
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ['-created_at']
@@ -49,7 +49,7 @@ class IncidenciaGuiaAdmin(admin.ModelAdmin):
         'reserva',
         "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
 
@@ -59,7 +59,7 @@ class IncidenciaTransporteAdmin(admin.ModelAdmin):
         'reserva',
         "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
 
@@ -79,7 +79,7 @@ class IncidenciaHotelAdmin(admin.ModelAdmin):
         "other_personal", "other_lobby_size",
         "causa",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ["-created_at"]
@@ -90,7 +90,7 @@ class IncidenciaTransferistaAdmin(admin.ModelAdmin):
         'reserva',
         "ciudad", "punto", "incidencia", "causa",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ["-created_at"]
@@ -101,7 +101,7 @@ class IncidenciaOpcionalAdmin(admin.ModelAdmin):
         "reserva",
         "ciudad", "incidencia",
         # Campos Comunes
-        'momento', 'remitente', 'via', 'pagador', 'importe', 'created_at', 'created_by',
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario',
     )
     ordering = ["-created_at"]
@@ -150,3 +150,18 @@ class TipoTransferistaRazonAdmin(admin.ModelAdmin):
 class TipoOpcionalIncidenciaAdmin(admin.ModelAdmin):
     list_display = ("pk", "nombre",)
     ordering = ["pk", "nombre"]
+
+@admin.register(TipoOtroIncidencia)
+class TipoOtroIncidenciaAdmin(admin.ModelAdmin):
+    list_display = ("pk", "nombre",)
+    ordering = ["pk", "nombre"]
+
+@admin.register(IncidenciaOtro)
+class IncidenciaOtroAdmin(admin.ModelAdmin):
+    list_display=(
+        'reserva',
+        'incidencia',
+        # Campos Comunes
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
+        'comentario',
+    )
