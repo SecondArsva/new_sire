@@ -169,6 +169,7 @@ class IncidenciaOtroAdmin(admin.ModelAdmin):
 @admin.register(IncidenciaMonumento)
 class IncidenciaMonumentoAdmin(admin.ModelAdmin):
     list_display=(
+        'reserva',
         'ciudad',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
@@ -178,6 +179,7 @@ class IncidenciaMonumentoAdmin(admin.ModelAdmin):
 @admin.register(IncidenciaTicket)
 class IncidenciaTicketAdmin(admin.ModelAdmin):
     list_display=(
+        'reserva',
         'origen', 'destino',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
@@ -187,8 +189,10 @@ class IncidenciaTicketAdmin(admin.ModelAdmin):
 @admin.register(IncidenciaVueloIncluido)
 class IncidenciaVueloIncluidoAdmin(admin.ModelAdmin):
     list_display=(
+        'reserva',
         'origen', 'destino',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario', "is_active",
     )
+    

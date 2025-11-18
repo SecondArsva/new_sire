@@ -277,7 +277,7 @@ class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     
     incidencia = forms.ModelChoiceField(
         label="Incidencia",
-        queryset=TipoOpcionalIncidencia.objects.all(),
+        queryset=TipoOpcionalIncidencia.objects.none(),
         empty_label="---------",
         required=True,
     )
@@ -291,11 +291,12 @@ class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
+        self.fields["incidencia"].queryset = TipoOpcionalIncidencia.objects.all().order_by("nombre")
 
 class IncidenciaOtroForm(IncidenciaCamposComunesForm):
     incidencia = forms.ModelChoiceField(
         label="Incidencia",
-        queryset=TipoOtroIncidencia.objects.all(),
+        queryset=TipoOtroIncidencia.objects.none(),
         empty_label="---------",
         required=True,
     )
@@ -313,7 +314,7 @@ class IncidenciaOtroForm(IncidenciaCamposComunesForm):
 class IncidenciaMonumentoForm(IncidenciaCamposComunesForm):
     ciudad = forms.ModelChoiceField(
         label="Ciudad",
-        queryset=Ciudad.objects.all(),
+        queryset=Ciudad.objects.none(),
         empty_label="---------",
         required=True,
     )
@@ -331,15 +332,15 @@ class IncidenciaMonumentoForm(IncidenciaCamposComunesForm):
 class IncidenciaTicketForm(IncidenciaCamposComunesForm):
     origen = forms.ModelChoiceField(
         label="Origen",
-        queryset=Ciudad.objects.all(),
+        queryset=Ciudad.objects.none(),
         empty_label="---------",
         required=True,
     )
     destino = forms.ModelChoiceField(
         label="Destino",
-        queryset=Ciudad.objects.all(),
+        queryset=Ciudad.objects.none(),
         empty_label="---------",
-        required=True,
+        required=False,
     )
 
     field_order = [
@@ -353,18 +354,18 @@ class IncidenciaTicketForm(IncidenciaCamposComunesForm):
         self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
         self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
 
-class IncidenciaVuelosIncluidoForm(IncidenciaCamposComunesForm):
+class IncidenciaVueloIncluidoForm(IncidenciaCamposComunesForm):
     origen = forms.ModelChoiceField(
         label="Origen",
-        queryset=Ciudad.objects.all(),
+        queryset=Ciudad.objects.none(),
         empty_label="---------",
         required=True,
     )
     destino = forms.ModelChoiceField(
         label="Destino",
-        queryset=Ciudad.objects.all(),
+        queryset=Ciudad.objects.none(),
         empty_label="---------",
-        required=True,
+        required=False,
     )
 
     field_order = [
