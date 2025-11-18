@@ -669,6 +669,39 @@ class IncidenciaOtro(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (otro)"
         ordering = ["-created_at"]
 
+class IncidenciaTicket(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_ticket",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_ticket_creadas",
+        verbose_name="Creado por"
+    )
+    origen = models.ForeignKey( # FROM
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de origen",
+        related_name="incidencias_ticket_origen",
+    )
+    destino = models.ForeignKey( # TO
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de destino",
+        related_name="incidencias_ticket_destino",
+        null=True, blank=True,
+    )
+    
+    class Meta:
+        db_table = "core_incidencia_ticket"
+        verbose_name = "Incidencia (ticket)"
+        verbose_name_plural = "Incidencias (ticket)"
+        ordering = ["-created_at"]
 
 #class IncidenciaMytrip(IncidenciaCamposComunes): # Autotipado
 #    # Sobreescritura del padre
@@ -737,24 +770,38 @@ class IncidenciaMonumento(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (monumentos)"
         ordering = ["-created_at"]
 
-#class IncidenciaVueloIncluido(IncidenciaCamposComunes):
-#    # Sobreescritura del padre
-#    reserva = models.ForeignKey(
-#        Reserva,
-#        on_delete=models.PROTECT,
-#        related_name="incidencias_vuelo_incluido",
-#        verbose_name="Reserva"
-#    )
-#    created_by = models.ForeignKey(
-#        settings.AUTH_USER_MODEL,
-#        on_delete=models.PROTECT,
-#        related_name="incidencias_vuelo_incluido_creadas",
-#        verbose_name="Creado por"
-#    )
-#    class Meta:
-#        db_table = "core_incidencia_vuelo_incluido"
-#        verbose_name = "Incidencia (vuelo incluido)"
-#        verbose_name_plural = "Incidencias (vuelos incluidos)"
-#        ordering = ["-created_at"]
-#
+class IncidenciaVueloIncluido(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_vuelo_incluido",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_vuelo_incluido_creadas",
+        verbose_name="Creado por"
+    )
+    origen = models.ForeignKey( # FROM
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de origen",
+        related_name="incidencias_vuelo_incluido_origen",
+    )
+    destino = models.ForeignKey( # TO
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de destino",
+        related_name="incidencias_vuelo_incluido_destino",
+        null=True, blank=True,
+    )
+
+    class Meta:
+        db_table = "core_incidencia_vuelo_incluido"
+        verbose_name = "Incidencia (vuelo incluido)"
+        verbose_name_plural = "Incidencias (vuelos incluidos)"
+        ordering = ["-created_at"]
+
 # ʕ•ᴥ•ʔ

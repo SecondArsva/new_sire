@@ -8,10 +8,11 @@ from django.contrib import messages
 from .forms import ReservaBuscarForm, ReservaCrearForm
 from .forms import IncidenciaDemoForm, IncidenciaGuiaForm, IncidenciaTransporteForm, IncidenciasHotelForm, IncidenciaTransferistaForm
 from .forms import IncidenciaMonumentoForm, IncidenciaOpcionalForm, IncidenciaOtroForm
+from .forms import IncidenciaTicketForm, IncidenciaVueloIncluidoForm
 #MODELS
 from .models import Reserva
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional, IncidenciaOtro
-from .models import IncidenciaMonumento
+from .models import IncidenciaMonumento, IncidenciaTicket, IncidenciaVueloIncluido
 # Para el handler jsonable
 from decimal import Decimal
 from django.db.models import Model
@@ -226,13 +227,15 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
 
     # Mapeo de tipos a forms y modelos
     FORM_MAP = {
-        "guia": (IncidenciaGuiaForm, IncidenciaGuia, "Incidencia Guía"),
-        "transporte": (IncidenciaTransporteForm, IncidenciaTransporte, "Incidencia Transporte"),
-        "hotel": (IncidenciasHotelForm, IncidenciaHotel, "Incidencia Hotel"),
-        "transferista": (IncidenciaTransferistaForm, IncidenciaTransferista, "Incidencia Transferista"),
-        "opcionales": (IncidenciaOpcionalForm, IncidenciaOpcional, "Incidencia Opcionales"),
-        "otro": (IncidenciaOtroForm, IncidenciaOtro, "Incidencia Otros"),
-        "monumento": (IncidenciaMonumentoForm, IncidenciaMonumento, "Incidencia Monumento"),
+        "guia": (IncidenciaGuiaForm, IncidenciaGuia, "Guía"),
+        "transporte": (IncidenciaTransporteForm, IncidenciaTransporte, "Transporte"),
+        "hotel": (IncidenciasHotelForm, IncidenciaHotel, "Hotel"),
+        "transferista": (IncidenciaTransferistaForm, IncidenciaTransferista, "Transferista"),
+        "opcionales": (IncidenciaOpcionalForm, IncidenciaOpcional, "Opcionales"),
+        "otro": (IncidenciaOtroForm, IncidenciaOtro, "Otros"),
+        "monumento": (IncidenciaMonumentoForm, IncidenciaMonumento, "Monumentos"),
+        "ticket": (IncidenciaTicketForm, IncidenciaTicket, "Tickets"),
+        "vuelo": (IncidenciaVueloIncluidoForm, IncidenciaVueloIncluido, "Vuelos Incluídos"),
     }
     if tipo not in FORM_MAP:
         print(f"Tipo no valido: {tipo}")

@@ -327,3 +327,53 @@ class IncidenciaMonumentoForm(IncidenciaCamposComunesForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
+
+class IncidenciaTicketForm(IncidenciaCamposComunesForm):
+    origen = forms.ModelChoiceField(
+        label="Origen",
+        queryset=Ciudad.objects.all(),
+        empty_label="---------",
+        required=True,
+    )
+    destino = forms.ModelChoiceField(
+        label="Destino",
+        queryset=Ciudad.objects.all(),
+        empty_label="---------",
+        required=True,
+    )
+
+    field_order = [
+        "origen", "destino",
+        # Campos Comunes
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
+        self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
+
+class IncidenciaVuelosIncluidoForm(IncidenciaCamposComunesForm):
+    origen = forms.ModelChoiceField(
+        label="Origen",
+        queryset=Ciudad.objects.all(),
+        empty_label="---------",
+        required=True,
+    )
+    destino = forms.ModelChoiceField(
+        label="Destino",
+        queryset=Ciudad.objects.all(),
+        empty_label="---------",
+        required=True,
+    )
+
+    field_order = [
+        "origen", "destino",
+        # Campos Comunes
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
+        self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
