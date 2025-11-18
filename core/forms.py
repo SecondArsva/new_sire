@@ -209,7 +209,7 @@ class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
         self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
         self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
 
-class IncidenciasHotelForm(IncidenciaCamposComunesForm):
+class IncidenciaHotelForm(IncidenciaCamposComunesForm):
     hotel = forms.ModelChoiceField(
         queryset=Basico.objects.none(),
         label="Hotel",
@@ -218,13 +218,13 @@ class IncidenciasHotelForm(IncidenciaCamposComunesForm):
     )
     # Tipos de incidencia
     habitacion = forms.BooleanField(label="ROOM", required=False, initial=False)
-    reserva = forms.BooleanField(label="RESERVE", required=False, initial=False)
+    reservation = forms.BooleanField(label="RESERVE", required=False, initial=False)
     restaurante = forms.BooleanField(label="RESTAURANT", required=False, initial=False)
     otro = forms.BooleanField(label="OTHER", required=False, initial=False)
 
     field_order = [
         "hotel",
-        "habitacion", "reserva", "restaurante", "otro",
+        "habitacion", "reservation", "restaurante", "otro",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]

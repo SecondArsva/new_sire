@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required # Autenticación
 from django.contrib import messages
 #FORMS
 from .forms import ReservaBuscarForm, ReservaCrearForm
-from .forms import IncidenciaDemoForm, IncidenciaGuiaForm, IncidenciaTransporteForm, IncidenciasHotelForm, IncidenciaTransferistaForm
+from .forms import IncidenciaDemoForm, IncidenciaGuiaForm, IncidenciaTransporteForm, IncidenciaHotelForm, IncidenciaTransferistaForm
 from .forms import IncidenciaMonumentoForm, IncidenciaOpcionalForm, IncidenciaOtroForm
 from .forms import IncidenciaTicketForm, IncidenciaVueloIncluidoForm
 #MODELS
@@ -229,7 +229,7 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
     FORM_MAP = {
         "guia": (IncidenciaGuiaForm, IncidenciaGuia, "Guía"),
         "transporte": (IncidenciaTransporteForm, IncidenciaTransporte, "Transporte"),
-        "hotel": (IncidenciasHotelForm, IncidenciaHotel, "Hotel"),
+        "hotel": (IncidenciaHotelForm, IncidenciaHotel, "Hotel"),
         "transferista": (IncidenciaTransferistaForm, IncidenciaTransferista, "Transferista"),
         "opcionales": (IncidenciaOpcionalForm, IncidenciaOpcional, "Opcionales"),
         "otro": (IncidenciaOtroForm, IncidenciaOtro, "Otros"),

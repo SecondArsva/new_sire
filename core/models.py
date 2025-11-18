@@ -424,7 +424,7 @@ class IncidenciaHotel(IncidenciaCamposComunes):
     hotel = models.ForeignKey(Hotel, on_delete=models.PROTECT)
     # Tipos de incidencia
     habitacion = models.BooleanField(default=False)
-    reserva = models.BooleanField(default=False)
+    reservation = models.BooleanField(default=False)
     restaurante = models.BooleanField(default=False)
     otro = models.BooleanField(default=False)
 
