@@ -11,6 +11,7 @@
 from django.db import transaction
 
 RAW_DATA = """
+Sin Especificar - None
 Gran Madrid - Madrid
 Centro Madrid - Madrid
 Princesa Ana - Barcelona

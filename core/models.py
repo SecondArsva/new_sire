@@ -240,59 +240,11 @@ class TipoCausa(models.Model):
 # - comentario, charfield max=1000, info del caso
 # - usuario, charfield pilla el nombre del usuario que rellenó el caso
 # - timestamp datetime automático
+# - En lugar de usar models.TextChoices almacenado en un campo models.CharField
+#   uso models.Model con registros según el tipo y lo recojo con un models.ForeignKey.
+
 class IncidenciaCamposComunes(models.Model):
     """Campos comunes para cualquier incidencia (modelo abstracto)."""
-    #   ╔═════════════╗
-    #   ║ TextChoices ║
-    #   ╚═════════════╝
-    
-    #class Momento(models.TextChoices):
-    #    PRE = "PRE", "Antes del viaje"
-    #    DUR = "DUR", "Durante el viaje"
-    #    POST = "POST", "Después del viaje"
-    #class Remitente(models.TextChoices):
-    #    CLIENTE = "CLI", "Cliente"
-    #    HOTEL = "HOT", "Hotel"
-    #    GUIA = "GUI", "Guía"
-    #    AGENCIA = "AGE", "Agencia"
-    #    INTERNO = "INT", "Interno"
-    #    OTRO = "OTR", "Otro"
-    #class ViaContacto(models.TextChoices):
-    #    TELEFONO = "TEL", "Teléfono"
-    #    EMAIL = "EML", "Email"
-    #    WHATSAPP = "WHA", "WhatsApp"
-    #    OTRO = "OTR", "Otros"
-    #    # HappyFaces
-    #    # MyTryp
-    #class Pagador(models.TextChoices):
-    #    EMV = "EMV", "EMV"
-    #    CLIENTE = "CLI", "Cliente"
-    #    AGENCIA = "AGE", "Agencia"
-    #    NONE = "NON", "Nadie"
-    #momento = models.CharField(
-    #    max_length=5,
-    #    choices=Momento.choices,
-    #    verbose_name="Momento del viaje",
-    #    db_index=True, # Revisa esto TODO
-    #)
-    #remitente = models.CharField(
-    #    max_length=3,
-    #    choices=Remitente.choices,
-    #    verbose_name="Remitente",
-    #    db_index=True, # Revisa esto TODO
-    #)
-    #via = models.CharField(
-    #    max_length=3,
-    #    choices=ViaContacto.choices,
-    #    verbose_name="Vía de contacto",
-    #    db_index=True, # Revisa esto TODO
-    #)
-    #pagador = models.CharField(
-    #    max_length=3,
-    #    choices=Pagador.choices,
-    #    verbose_name="Pagador",
-    #    db_index=True,
-    #)
     reserva = models.ForeignKey(
         Reserva,
         on_delete=models.PROTECT,
@@ -353,6 +305,8 @@ class IncidenciaCamposComunes(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creado")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado")
+
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
 
     class Meta:
         abstract = True # Autodescriptivo ¯\_(ツ)_/¯

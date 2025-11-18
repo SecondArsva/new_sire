@@ -210,41 +210,6 @@ def incidencia_demo(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "core/incidencia_demo.html", context)
 
-#FORM_STATE_KEY = "incidencia_guia"
-#@login_required
-#def incidencia_guia(request: HttpRequest) -> HttpResponse:
-#    state: dict = _get_state(request.session)
-#    localizador = state.get("localizador")
-#
-#    if not localizador:
-#        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
-#        return redirect("core:home")
-#    else:
-#        print(f"LOCATA EXISTE: {localizador}")
-#
-#    reserva = get_object_or_404(Reserva, localizador=localizador)
-#
-#    if request.method == "POST":
-#        form = IncidenciaGuiaForm(request.POST)
-#        if form.is_valid():
-#            _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
-#            IncidenciaGuia.objects.create(
-#                reserva=reserva,
-#                created_by=request.user,
-#                **form.cleaned_data,
-#            )
-#            print("Incidencia GUIA creada.")
-#            _set_state(request.session, SESSION_KEY, {})
-#            return redirect("core:home")
-#    else:
-#        initial = state.get(FORM_STATE_KEY, {})
-#        form = IncidenciaGuiaForm(initial=initial)
-#    context = {
-#        "reserva": reserva,
-#        "form": form,
-#    }
-#    return render(request, "core/incidencia_guia.html", context)
-
 FORM_STATE_KEY = "incidencia_guia"
 @login_required
 def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:

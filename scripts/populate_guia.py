@@ -22,6 +22,7 @@
 from django.db import transaction
 
 RAW_DATA = """
+Sin$Especificar
 Harrison$Ford$Focus
 Indiana$Jones
 Han$Solo

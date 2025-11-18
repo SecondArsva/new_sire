@@ -9,6 +9,7 @@ from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTrans
 
 # Register your models here.
 
+
 @admin.register(Pais)
 class PaisAdmin(admin.ModelAdmin):
     list_display = ('nombre',)
@@ -34,7 +35,7 @@ class HotelAdmin(admin.ModelAdmin):
 class IncidenciaDemo(admin.ModelAdmin):
     list_display = (
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
     ordering = ['-created_at']
 
@@ -50,7 +51,7 @@ class IncidenciaGuiaAdmin(admin.ModelAdmin):
         "guia", "personal", "gestion", "conocimiento", "idioma", "radio", "otro",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
 
 @admin.register(IncidenciaTransporte)
@@ -60,7 +61,7 @@ class IncidenciaTransporteAdmin(admin.ModelAdmin):
         "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
 
 @admin.register(Basico)
@@ -77,7 +78,7 @@ class IncidenciaHotelAdmin(admin.ModelAdmin):
         "causa",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
     ordering = ["-created_at"]
 
@@ -88,7 +89,7 @@ class IncidenciaTransferistaAdmin(admin.ModelAdmin):
         "ciudad", "punto", "incidencia", "causa",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
     ordering = ["-created_at"]
 
@@ -99,7 +100,7 @@ class IncidenciaOpcionalAdmin(admin.ModelAdmin):
         "ciudad", "incidencia",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
     ordering = ["-created_at"]
 
@@ -160,7 +161,7 @@ class IncidenciaOtroAdmin(admin.ModelAdmin):
         'incidencia',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
 
 @admin.register(IncidenciaMonumento)
@@ -169,5 +170,5 @@ class IncidenciaMonumentoAdmin(admin.ModelAdmin):
         'ciudad',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario',
+        'comentario', "is_active",
     )
