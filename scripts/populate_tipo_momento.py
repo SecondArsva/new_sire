@@ -14,9 +14,9 @@
 from django.db import transaction
 
 RAW_DATA = """
-Antes del viaje
-Durante el viaje
-Después del viaje
+Pre-viaje
+En ruta
+Post-viaje
 """
 
 

@@ -21,6 +21,7 @@ Airport Service (Passport control, Luggage pick-up)
 PAX Error
 TSF Error
 Unknown
+Pendiente de datos (viri)
 """
 
 

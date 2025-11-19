@@ -76,7 +76,7 @@ class IncidenciaHotelAdmin(admin.ModelAdmin):
     list_display=(
         'reserva',
         "hotel",
-        "habitacion", "reservation", "restaurante", "otro",
+        "habitacion", "ubicacion", "reservation", "restaurante", "otro",
         "causa",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',

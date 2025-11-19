@@ -10,7 +10,7 @@ from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, Tipo
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
 from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon
-from .models import TipoOpcionalIncidencia, TipoOtroIncidencia
+from .models import TipoOpcionalIncidencia, TipoOtroIncidencia#, IncidenciaItinerario
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -218,13 +218,14 @@ class IncidenciaHotelForm(IncidenciaCamposComunesForm):
     )
     # Tipos de incidencia
     habitacion = forms.BooleanField(label="ROOM", required=False, initial=False)
+    ubicacion = forms.BooleanField(label="UBICACION", required=False, initial=False)
     reservation = forms.BooleanField(label="RESERVE", required=False, initial=False)
     restaurante = forms.BooleanField(label="RESTAURANT", required=False, initial=False)
     otro = forms.BooleanField(label="OTHER", required=False, initial=False)
 
     field_order = [
         "hotel",
-        "habitacion", "reservation", "restaurante", "otro",
+        "habitacion", "ubicacion", "reservation", "restaurante", "otro",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
@@ -378,3 +379,35 @@ class IncidenciaVueloIncluidoForm(IncidenciaCamposComunesForm):
         super().__init__(*args, **kwargs)
         self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
         self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
+
+#class IncidenciaItinerarioForm(IncidenciaCamposComunesForm):
+#    origen = forms.ModelChoiceField(
+#        label="Origen",
+#        queryset=Ciudad.objects.none(),
+#        empty_label="---------",
+#        required=True,
+#    )
+#    destino = forms.ModelChoiceField(
+#        label="Destino",
+#        queryset=Ciudad.objects.none(),
+#        empty_label="---------",
+#        required=False,
+#    )
+#
+#    schedule = forms.BooleanField(default=False, ) # Horario (Fallo de EMV)
+#    ticket = forms.BooleanField(default=False, ) # Entrada actividades. Entrada Museos, aunque sea el Bernabéu.
+#    trip = forms.BooleanField(default=False, ) # Vuelos incluídos, tickets de ferris...
+#
+#    field_order = [
+#        "origen", "destino",
+#        "schedule", "ticket", "included",
+#        # Campos Comunes
+#        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+#    ]
+#
+#    def __init__(self, *args, **kwargs):
+#        super().__init__(*args, **kwargs)
+#        self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
+#        self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
+#
+#

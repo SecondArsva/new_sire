@@ -22,7 +22,7 @@ PILARATT pilar.garcia@europamundo.com
 # JAVIERATT serviciosenruta@europamundo.com ???
 ROSAATT rosa.pego@europamundo.com
 AKIOATT akio.morimoto@europamundo.com
-# CAMI ???
+CAMILAORI camila.chavez@europamundo.com
 # FATI ???
 FACUNDOL facundo.lind@europamundo.com
 """

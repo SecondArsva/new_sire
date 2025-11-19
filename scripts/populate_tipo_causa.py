@@ -17,10 +17,11 @@ RAW_DATA = """
 EMV
 PAX
 OPERATOR
-DMC (Destination Management Company)
+DMC (Destination Management Company) Receptivo
 UNKNOWN
 INFO
 CONGRATS
+FUERZA MAYOR (viri)
 """
 
 

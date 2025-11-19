@@ -424,6 +424,7 @@ class IncidenciaHotel(IncidenciaCamposComunes):
     hotel = models.ForeignKey(Hotel, on_delete=models.PROTECT)
     # Tipos de incidencia
     habitacion = models.BooleanField(default=False)
+    ubicacion = models.BooleanField(default=False)
     reservation = models.BooleanField(default=False)
     restaurante = models.BooleanField(default=False)
     otro = models.BooleanField(default=False)
@@ -723,26 +724,51 @@ class IncidenciaTicket(IncidenciaCamposComunes):
 #        verbose_name_plural = "Incidencias (mytrip)"
 #        ordering = ["-created_at"]
 #
-#class IncidenciaItinerario(IncidenciaCamposComunes):
-#    # Sobreescritura del padre
-#    reserva = models.ForeignKey(
-#        Reserva,
-#        on_delete=models.PROTECT,
-#        related_name="incidencias_itinerario",
-#        verbose_name="Reserva"
-#    )
-#    created_by = models.ForeignKey(
-#        settings.AUTH_USER_MODEL,
-#        on_delete=models.PROTECT,
-#        related_name="incidencias_itinerario_creadas",
-#        verbose_name="Creado por"
-#    )
-#    class Meta:
-#        db_table = "core_incidencia_itinerario"
-#        verbose_name = "Incidencia (itinerario)"
-#        verbose_name_plural = "Incidencias (itinerarios)"
-#        ordering = ["-created_at"]
-#
+class IncidenciaItinerario(IncidenciaCamposComunes):
+    '''
+    Area para las actividades dentro del paquete turístico.
+    Incluimos los tickets (ferry, boat...), vuelos incluidos (CAM),
+    entradas de actividades (lo conocido como Entrada Museos)
+    y un tipo de incidencia  "schedule". 4 checkbox.
+    '''
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_itinerario",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_itinerario_creadas",
+        verbose_name="Creado por",
+    )
+    # Incidencias
+    schedule = models.BooleanField(default=False) # Horario (Fallo de EMV)
+    ticket = models.BooleanField(default=False) # Entrada actividades. Entrada Museos, aunque sea el Bernabéu.
+    trip = models.BooleanField(default=False) # Vuelos incluídos, tickets de ferris...
+    
+    origen = models.ForeignKey( # FROM
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de origen",
+        related_name="incidencias_itinerario_origen",
+    )
+    destino = models.ForeignKey( # TO
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad de destino",
+        related_name="incidencias_itinerario_destino",
+        null=True, blank=True,
+    )
+
+    class Meta:
+        db_table = "core_incidencia_itinerario"
+        verbose_name = "Incidencia (itinerario)"
+        verbose_name_plural = "Incidencias (itinerarios)"
+        ordering = ["-created_at"]
+
 class IncidenciaMonumento(IncidenciaCamposComunes):
     # Sobreescritura del padre
     reserva = models.ForeignKey(
