@@ -161,7 +161,19 @@ def reserva_crear(request, localizador: str):
 #   ╚═════════════╝
 @login_required
 def incidencia_area(request): # Botones de selección en template.
-    return render(request, "core/incidencia_area.html")
+    # 0) Pillamos el locata a través del session_state
+    state: dict = _get_state(request.session)
+    localizador = state.get("localizador")
+
+    # 1) Control de errores.
+    if not localizador:
+        print("Error: No hay locata: Intento de acceso sin pasar por el buscador de reservas")
+        return redirect("core:home")
+    
+    context = {
+        "localizador": localizador,
+    }
+    return render(request, "core/incidencia_area.html", context)
 
 FORM_STATE_KEY = "incidencia_demo"
 @login_required
@@ -252,8 +264,11 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
                 created_by=request.user,
                 **form.cleaned_data,
             )
-            print("Incidencia GUIA creada.")
+            print("Incidencia creada.")
             _set_state(request.session, SESSION_KEY, {})
+            action = request.POST("action")
+            if action == "volver_reserva":
+                return redirect("core:reserva_ver", reserva=reserva) # TODO
             return redirect("core:home")
     else:
         initial = state.get(FORM_STATE_KEY, {})

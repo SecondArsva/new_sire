@@ -3,7 +3,8 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Guardar</button>
+    <button type="submit" name="action" value="volver_home">Crear Registro</button>
+    <button type="submit" name="action" value="volver_reserva">Crear y continuar TODO</button>
   </form>
 
   {% if messages %}
