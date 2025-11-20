@@ -8,11 +8,10 @@ from django.contrib import messages
 from .forms import ReservaBuscarForm, ReservaCrearForm
 from .forms import IncidenciaDemoForm, IncidenciaGuiaForm, IncidenciaTransporteForm, IncidenciaHotelForm, IncidenciaTransferistaForm
 from .forms import IncidenciaMonumentoForm, IncidenciaOpcionalForm, IncidenciaOtroForm
-from .forms import IncidenciaTicketForm, IncidenciaVueloIncluidoForm#, IncidenciaItinerarioForm
 #MODELS
 from .models import Reserva
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte, IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional, IncidenciaOtro
-from .models import IncidenciaMonumento, IncidenciaTicket, IncidenciaVueloIncluido#, IncidenciaItinerario
+from .models import IncidenciaMonumento#, IncidenciaItinerario
 # Para el handler jsonable
 from decimal import Decimal
 from django.db.models import Model
@@ -246,8 +245,6 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
         "opcionales": (IncidenciaOpcionalForm, IncidenciaOpcional, "Opcionales"),
         "otro": (IncidenciaOtroForm, IncidenciaOtro, "Otros"),
         "monumento": (IncidenciaMonumentoForm, IncidenciaMonumento, "Monumentos (BORRAR)"),
-        "ticket": (IncidenciaTicketForm, IncidenciaTicket, "Tickets  (BORRAR)"),
-        "vuelo": (IncidenciaVueloIncluidoForm, IncidenciaVueloIncluido, "Vuelos Incluídos (BORRAR)"),
         #"itinerario": (IncidenciaItinerarioForm, IncidenciaItinerario, "Itinerario"),
     }
     if tipo not in FORM_MAP:

@@ -5,7 +5,7 @@ from .models import Operador, Reserva, Basico
 from .models import Hotel, Guia
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte
 from .models import IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional
-from .models import IncidenciaOtro, IncidenciaTicket, IncidenciaVueloIncluido
+from .models import IncidenciaOtro
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia, IncidenciaMonumento
 from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon, TipoOpcionalIncidencia
 
@@ -171,26 +171,6 @@ class IncidenciaMonumentoAdmin(admin.ModelAdmin):
     list_display=(
         'reserva',
         'ciudad',
-        # Campos Comunes
-        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario', "is_active",
-    )
-
-@admin.register(IncidenciaTicket)
-class IncidenciaTicketAdmin(admin.ModelAdmin):
-    list_display=(
-        'reserva',
-        'origen', 'destino',
-        # Campos Comunes
-        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
-        'comentario', "is_active",
-    )
-
-@admin.register(IncidenciaVueloIncluido)
-class IncidenciaVueloIncluidoAdmin(admin.ModelAdmin):
-    list_display=(
-        'reserva',
-        'origen', 'destino',
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario', "is_active",
