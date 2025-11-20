@@ -5,12 +5,13 @@ from django.contrib.auth.forms import AuthenticationForm    # ╔═════
 from django.contrib.auth.models import User                 # ║ AUTH ║
 from django.contrib.auth import authenticate                # ╚══════╝
 
-from .models import Operador, Hotel, Guia, Ciudad, Basico
+from .models import Operador, Hotel, Guia, Ciudad, Basico, Opcional
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, TipoPagador
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
+from .models import IncidenciaGeneral
 from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon
-from .models import TipoOpcionalIncidencia, TipoOtroIncidencia#, IncidenciaItinerario
+from .models import TipoOpcionalIncidencia, TipoOtroIncidencia, IncidenciaItinerario
 from django.core.validators import RegexValidator
 
 #   ╔══════╗
@@ -270,29 +271,28 @@ class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
         self.fields["razon"].queryset = TipoTransferistaRazon.objects.all().order_by("id")
 
 class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
-    ciudad = forms.ModelChoiceField(
-        queryset=Ciudad.objects.none(),
+    opcional = forms.ModelChoiceField(
+        queryset=Opcional.objects.none(),
         label="Ciudad",
         required=True,
         empty_label="Selecciona una ciudad",)
     
-    incidencia = forms.ModelChoiceField(
-        label="Incidencia",
-        queryset=TipoOpcionalIncidencia.objects.none(),
-        empty_label="---------",
-        required=True,
-    )
+    #incidencia = forms.ModelChoiceField(
+    #    label="Incidencia",
+    #    queryset=TipoOpcionalIncidencia.objects.none(),
+    #    empty_label="---------",
+    #    required=True,
+    #)
 
     field_order = [
-        "ciudad", "incidencia",
+        "opcional",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
-        self.fields["incidencia"].queryset = TipoOpcionalIncidencia.objects.all().order_by("nombre")
+        self.fields["opcional"].queryset = Opcional.objects.all().order_by("nombre")
 
 class IncidenciaOtroForm(IncidenciaCamposComunesForm):
     incidencia = forms.ModelChoiceField(
@@ -312,34 +312,40 @@ class IncidenciaOtroForm(IncidenciaCamposComunesForm):
         super().__init__(*args, **kwargs)
         self.fields["incidencia"].queryset = TipoOtroIncidencia.objects.all().order_by("nombre")
 
-#class IncidenciaItinerarioForm(IncidenciaCamposComunesForm):
-#    origen = forms.ModelChoiceField(
-#        label="Origen",
-#        queryset=Ciudad.objects.none(),
-#        empty_label="---------",
-#        required=True,
-#    )
-#    destino = forms.ModelChoiceField(
-#        label="Destino",
-#        queryset=Ciudad.objects.none(),
-#        empty_label="---------",
-#        required=False,
-#    )
-#
-#    schedule = forms.BooleanField(default=False, ) # Horario (Fallo de EMV)
-#    ticket = forms.BooleanField(default=False, ) # Entrada actividades. Entrada Museos, aunque sea el Bernabéu.
-#    trip = forms.BooleanField(default=False, ) # Vuelos incluídos, tickets de ferris...
-#
-#    field_order = [
-#        "origen", "destino",
-#        "schedule", "ticket", "included",
-#        # Campos Comunes
-#        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
-#    ]
-#
-#    def __init__(self, *args, **kwargs):
-#        super().__init__(*args, **kwargs)
-#        self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
-#        self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
-#
-#
+class IncidenciaGeneralForm(IncidenciaCamposComunesForm):
+    inc_personal = forms.BooleanField(label="PERSONAL", required=False, initial=False)
+    inc_seguro = forms.BooleanField(label="SEGURO", required=False, initial=False)
+    inc_otros = forms.BooleanField(label="OTROS", required=False, initial=False)
+
+    field_order = [
+        "inc_personal", "inc_seguro", "inc_otros",
+        # Campos Comunes
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+    ]
+
+class IncidenciaItinerarioForm(IncidenciaCamposComunesForm):
+    ciudad = forms.ModelChoiceField(
+        label="Ciudad",
+        queryset=Ciudad.objects.none(),
+        empty_label="---------",
+        required=True,
+    )
+
+    inc_itinerario = forms.BooleanField(label="ITINERARIO", required=False, initial=False)
+    inc_entradas = forms.BooleanField(label="ENTRADAS", required=False, initial=False)
+    inc_billetes = forms.BooleanField(label="BILLETES", required=False, initial=False)
+    inc_comidas = forms.BooleanField(label="COMIDAS", required=False, initial=False)
+    inc_guia_local = forms.BooleanField(label="GUIA_LOCAL", required=False, initial=False)
+
+    field_order = [
+        "ciudad",
+        "inc_itinerario", "inc_entradas", "inc_billetes", "inc_guia_local", "inc_comidas",
+        # Campos Comunes
+        "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
+
+

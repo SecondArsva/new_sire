@@ -6,11 +6,11 @@ from .models import Hotel, Guia
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte
 from .models import IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional
 from .models import IncidenciaOtro
-from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia, IncidenciaMonumento
+from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia
 from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon, TipoOpcionalIncidencia
+from .models import IncidenciaGeneral, IncidenciaItinerario
 
 # Register your models here.
-
 
 @admin.register(Pais)
 class PaisAdmin(admin.ModelAdmin):
@@ -99,7 +99,7 @@ class IncidenciaTransferistaAdmin(admin.ModelAdmin):
 class IncidenciaOpcionalAdmin(admin.ModelAdmin):
     list_display = (
         "reserva",
-        "ciudad", "incidencia",
+        "opcional",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario', "is_active",
@@ -166,11 +166,22 @@ class IncidenciaOtroAdmin(admin.ModelAdmin):
         'comentario', "is_active",
     )
 
-@admin.register(IncidenciaMonumento)
-class IncidenciaMonumentoAdmin(admin.ModelAdmin):
+@admin.register(IncidenciaGeneral)
+class IncidenciaGeneralAdmin(admin.ModelAdmin):
+    list_display=(
+        'reserva',
+        'inc_personal', 'inc_seguro', 'inc_otros',
+        # Campos Comunes
+        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
+        'comentario', "is_active",
+    )
+
+@admin.register(IncidenciaItinerario)
+class IncidenciaItinerarioAdmin(admin.ModelAdmin):
     list_display=(
         'reserva',
         'ciudad',
+        'inc_itinerario', 'inc_entradas', 'inc_billetes', 'inc_guia_local', 'inc_comidas', 
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario', "is_active",

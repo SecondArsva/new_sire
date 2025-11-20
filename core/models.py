@@ -292,7 +292,7 @@ class IncidenciaCamposComunes(models.Model):
     )
 
     comentario = models.TextField(
-        max_length=500,
+        max_length=1000,
         verbose_name="Comentario",
         help_text="Información adicional del caso (máx. 500)"
     )
@@ -670,13 +670,31 @@ class IncidenciaOtro(IncidenciaCamposComunes):
         verbose_name_plural = "Incidencias (otro)"
         ordering = ["-created_at"]
 
+class IncidenciaGeneral(IncidenciaCamposComunes):
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_general",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_general_creadas",
+        verbose_name="Creado por",
+    )
+    inc_personal = models.BooleanField(default=False)
+    inc_seguro = models.BooleanField(default=False)
+    inc_otros = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "core_incidencia_general"
+        verbose_name = "Incidencia (general)"
+        verbose_name_plural = "Incidencias (general)"
+        ordering = ["-created_at"]
+
 class IncidenciaItinerario(IncidenciaCamposComunes):
-    '''
-    Area para las actividades dentro del paquete turístico.
-    Incluimos los tickets (ferry, boat...), vuelos incluidos (CAM),
-    entradas de actividades (lo conocido como Entrada Museos)
-    y un tipo de incidencia  "schedule". 4 checkbox.
-    '''
     # Sobreescritura del padre
     reserva = models.ForeignKey(
         Reserva,
@@ -690,29 +708,69 @@ class IncidenciaItinerario(IncidenciaCamposComunes):
         related_name="incidencias_itinerario_creadas",
         verbose_name="Creado por",
     )
-    # Incidencias
-    schedule = models.BooleanField(default=False) # Horario (Fallo de EMV)
-    ticket = models.BooleanField(default=False) # Entrada actividades. Entrada Museos, aunque sea el Bernabéu.
-    trip = models.BooleanField(default=False) # Vuelos incluídos, tickets de ferris...
-    
-    origen = models.ForeignKey( # FROM
+    inc_itinerario = models.BooleanField(default=False)
+    inc_entradas = models.BooleanField(default=False)
+    inc_billetes = models.BooleanField(default=False)
+    inc_guia_local = models.BooleanField(default=False)
+    inc_comidas = models.BooleanField(default=False)
+
+    ciudad = models.ForeignKey(
         Ciudad,
         on_delete=models.PROTECT,
-        verbose_name="Ciudad de origen",
-        related_name="incidencias_itinerario_origen",
-    )
-    destino = models.ForeignKey( # TO
-        Ciudad,
-        on_delete=models.PROTECT,
-        verbose_name="Ciudad de destino",
+        verbose_name="Ciudad",
         related_name="incidencias_itinerario_destino",
-        null=True, blank=True,
     )
 
     class Meta:
         db_table = "core_incidencia_itinerario"
         verbose_name = "Incidencia (itinerario)"
-        verbose_name_plural = "Incidencias (itinerarios)"
+        verbose_name_plural = "Incidencias (itinerario)"
+        ordering = ["-created_at"]
+
+class Opcional(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    ciudad = models.ForeignKey(
+        Ciudad,
+        on_delete=models.PROTECT,
+        verbose_name="Ciudad",
+        related_name="opcionales",
+    )
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "core_opcional"
+        verbose_name = "Opcional"
+        verbose_name_plural = "Opcionales"
+        ordering = ["nombre"]
+
+    def __str__(self):
+        return self.nombre
+
+class IncidenciaOpcional():
+    # Sobreescritura del padre
+    reserva = models.ForeignKey(
+        Reserva,
+        on_delete=models.PROTECT,
+        related_name="incidencias_itinerario",
+        verbose_name="Reserva"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="incidencias_itinerario_creadas",
+        verbose_name="Creado por",
+    )
+    opcional = models.ForeignKey(
+        Opcional,
+        on_delete=models.PROTECT,
+        verbose_name="Opcional",
+        db_index=True,
+    )
+
+    class Meta:
+        db_table = "core_incidencia_opcional"
+        verbose_name = "Incidencia (opcional)"
+        verbose_name_plural = "Incidencias (opcional)"
         ordering = ["-created_at"]
 
 # ʕ•ᴥ•ʔ
