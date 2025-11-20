@@ -19,12 +19,13 @@ FERNANDOATT fernando.ayala@europamundo.com
 VIRIATT viridiana.rendon@europamundo.com
 FELIPEATT felipe.dossantos@europamundo.com
 PILARATT pilar.garcia@europamundo.com
-# JAVIERATT serviciosenruta@europamundo.com ???
+JAVIERKIESLISH javier.kieslich@europamundo.com
 ROSAATT rosa.pego@europamundo.com
 AKIOATT akio.morimoto@europamundo.com
 CAMILAORI camila.chavez@europamundo.com
-# FATI ???
+FATIMAATT fatima.queipo@europamundo.com
 FACUNDOL facundo.lind@europamundo.com
+AGUSTINATT agustin.sanjuan@europamundo.com
 """
 
 COMMON_PASSWORD = "1234"

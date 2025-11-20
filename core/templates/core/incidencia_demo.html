@@ -1,13 +1,13 @@
-  <h1>{{ reserva.localizador }}: Incidencia Demo</h1>
+<h1>{{ reserva.localizador }}: Incidencia Demo</h1>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-  </form>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Guardar</button>
+</form>
 
-  {% if messages %}
-    <ul>
-      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-    </ul>
-  {% endif %}
+{% if messages %}
+  <ul>
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}

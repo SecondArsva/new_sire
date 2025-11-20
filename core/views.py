@@ -256,6 +256,8 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
     FormClass, ModelClass, title = FORM_MAP[tipo]
 
     if request.method == "POST":
+        action = request.POST.get("action")
+
         form = FormClass(request.POST)
         if form.is_valid():
             _set_state(request.session, FORM_STATE_KEY, form.cleaned_data)
@@ -266,9 +268,10 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
             )
             print("Incidencia creada.")
             _set_state(request.session, SESSION_KEY, {})
-            action = request.POST("action")
+
             if action == "volver_reserva":
-                return redirect("core:reserva_ver", reserva=reserva) # TODO
+                return redirect("core:reserva_ver", localizador=localizador) # TODO
+
             return redirect("core:home")
     else:
         initial = state.get(FORM_STATE_KEY, {})

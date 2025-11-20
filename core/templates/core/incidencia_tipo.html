@@ -1,14 +1,14 @@
-  <h1>{{ reserva.localizador }}: {{ title }}</h1>
+<h1>{{ reserva.localizador }}: {{ title }}</h1>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="action" value="volver_home">Crear Registro</button>
-    <button type="submit" name="action" value="volver_reserva">Crear y continuar TODO</button>
-  </form>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" name="action" value="volver_home">Crear Registro</button>
+  <button type="submit" name="action" value="volver_reserva">Crear y continuar TODO</button>
+</form>
 
-  {% if messages %}
-    <ul>
-      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-    </ul>
-  {% endif %}
+{% if messages %}
+  <ul>
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}

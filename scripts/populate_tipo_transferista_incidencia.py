@@ -17,6 +17,7 @@ RAW_DATA = """
 Pasajero ausente
 Error del transferista
 Encuentro no efectuado
+Pndiente de datos (viri)
 Otros
 """
 
