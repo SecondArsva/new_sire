@@ -14,10 +14,12 @@
 from django.db import transaction
 
 RAW_DATA = """
-Pasajero ausente
-Error del transferista
-Encuentro no efectuado
-Pndiente de datos (viri)
+IN
+OUT
+#Pasajero ausente
+#Error del transferista
+#Encuentro no efectuado
+#Pndiente de datos (viri)
 Otros
 """
 

@@ -380,19 +380,19 @@ class IncidenciaTransporte(IncidenciaCamposComunes):
         verbose_name="Creado por"
     )
     # Campos de Transporte
-    basico = models.ForeignKey(Basico, on_delete=models.PROTECT)
-    origen = models.ForeignKey( # FROM
-        Ciudad,
-        on_delete=models.PROTECT,
-        verbose_name="Ciudad de origen",
-        related_name="incidencias_transporte_origen",
-    )
-    destino = models.ForeignKey( # TO
-        Ciudad,
-        on_delete=models.PROTECT,
-        verbose_name="Ciudad de destino",
-        related_name="incidencias_transporte_destino",
-    )
+    #basico = models.ForeignKey(Basico, on_delete=models.PROTECT)
+    #origen = models.ForeignKey( # FROM
+    #    Ciudad,
+    #    on_delete=models.PROTECT,
+    #    verbose_name="Ciudad de origen",
+    #    related_name="incidencias_transporte_origen",
+    #)
+    #destino = models.ForeignKey( # TO
+    #    Ciudad,
+    #    on_delete=models.PROTECT,
+    #    verbose_name="Ciudad de destino",
+    #    related_name="incidencias_transporte_destino",
+    #)
     # Tipos de incidencia
     conductor = models.BooleanField(default=False)
     averia = models.BooleanField(default=False)
@@ -490,6 +490,8 @@ class TipoTransferistaPunto(models.Model):
         - Hotel / Estación de tren
         - Puerto marítimo / Hotel
         - Hotel / Puerto marítimo
+
+        Nada... Solo IN y OUT.
     """
     class Meta:
         db_table = "core_tipo_transferista_punto"

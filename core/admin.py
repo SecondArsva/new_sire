@@ -60,7 +60,8 @@ class IncidenciaGuiaAdmin(admin.ModelAdmin):
 class IncidenciaTransporteAdmin(admin.ModelAdmin):
     list_display=(
         'reserva',
-        "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
+        #"basico", "origen", "destino",
+        "conductor", "averia", "equipaje", "accidente", "otro",
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario', "is_active",

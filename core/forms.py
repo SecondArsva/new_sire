@@ -176,21 +176,21 @@ class IncidenciaGuiaForm(IncidenciaCamposComunesForm):
         self.order_fields(self.field_order)  # asegura el orden
 
 class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
-    basico = forms.ModelChoiceField(
-        queryset=Basico.objects.none(),
-        label="Básico",
-        required=True,
-        empty_label="Selecciona el sector básico",)
-    origen = forms.ModelChoiceField(
-        queryset=Ciudad.objects.none(),
-        label="Origen",
-        required=True,
-        empty_label="Selecciona una ciudad",)
-    destino = forms.ModelChoiceField(
-        queryset=Ciudad.objects.none(),
-        label="Destino",
-        required=True,
-        empty_label="Selecciona una ciudad",)
+    #basico = forms.ModelChoiceField(
+    #    queryset=Basico.objects.none(),
+    #    label="Básico",
+    #    required=True,
+    #    empty_label="Selecciona el sector básico",)
+    #origen = forms.ModelChoiceField(
+    #    queryset=Ciudad.objects.none(),
+    #    label="Origen",
+    #    required=True,
+    #    empty_label="Selecciona una ciudad",)
+    #destino = forms.ModelChoiceField(
+    #    queryset=Ciudad.objects.none(),
+    #    label="Destino",
+    #    required=True,
+    #    empty_label="Selecciona una ciudad",)
 
     conductor = forms.BooleanField(label="CONDUCTOR", required=False, initial=False)
     averia = forms.BooleanField(label="AVERÍA", required=False, initial=False)
@@ -199,16 +199,17 @@ class IncidenciaTransporteForm(IncidenciaCamposComunesForm):
     otro = forms.BooleanField(label="OTRO", required=False, initial=False)
 
     field_order = [
-        "basico", "origen", "destino", "conductor", "averia", "equipaje", "accidente", "otro",
+        #"basico", "origen", "destino",
+        "conductor", "averia", "equipaje", "accidente", "otro",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["basico"].queryset = Basico.objects.all().order_by("nombre")
-        self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
-        self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
+    #def __init__(self, *args, **kwargs):
+    #    super().__init__(*args, **kwargs)
+    #    self.fields["basico"].queryset = Basico.objects.all().order_by("nombre")
+    #    self.fields["origen"].queryset = Ciudad.objects.all().order_by("nombre")
+    #    self.fields["destino"].queryset = Ciudad.objects.all().order_by("nombre")
 
 class IncidenciaHotelForm(IncidenciaCamposComunesForm):
     hotel = forms.ModelChoiceField(
