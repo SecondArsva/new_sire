@@ -1,13 +1,13 @@
 from django.contrib import admin
 # modelos
 from .models import Pais, Ciudad
-from .models import Operador, Reserva, Basico
+from .models import Operador, Reserva, Basico, Opcional
 from .models import Hotel, Guia
 from .models import IncidenciaDemo, IncidenciaGuia, IncidenciaTransporte
 from .models import IncidenciaHotel, IncidenciaTransferista, IncidenciaOpcional
 from .models import IncidenciaOtro
 from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoPagador, TipoCausa, TipoOtroIncidencia
-from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon, TipoOpcionalIncidencia
+from .models import TipoTransferistaIncidencia, TipoTransferistaPunto
 from .models import IncidenciaGeneral, IncidenciaItinerario
 
 # Register your models here.
@@ -99,7 +99,8 @@ class IncidenciaTransferistaAdmin(admin.ModelAdmin):
 class IncidenciaOpcionalAdmin(admin.ModelAdmin):
     list_display = (
         "reserva",
-        "opcional",
+        "opcional", 
+        "inc_no_realizado", "inc_devolucion", "inc_pack", "inc_otros", 
         # Campos Comunes
         'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
         'comentario', "is_active",
@@ -141,15 +142,25 @@ class TipoTransferistaPuntoAdmin(admin.ModelAdmin):
     list_display = ("pk", "nombre",)
     ordering = ["pk", "nombre"]
 
-@admin.register(TipoTransferistaRazon)
-class TipoTransferistaRazonAdmin(admin.ModelAdmin):
+#@admin.register(TipoTransferistaRazon)
+#class TipoTransferistaRazonAdmin(admin.ModelAdmin):
+#    list_display = ("pk", "nombre",)
+#    ordering = ["pk", "nombre"]
+
+@admin.register(Opcional)
+class OpcionalAdmin(admin.ModelAdmin):
     list_display = ("pk", "nombre",)
     ordering = ["pk", "nombre"]
 
-@admin.register(TipoOpcionalIncidencia)
-class TipoOpcionalIncidenciaAdmin(admin.ModelAdmin):
-    list_display = ("pk", "nombre",)
-    ordering = ["pk", "nombre"]
+#@admin.register(TipoOpcionalIncidencia)
+#class OpcionalIncidenciaAdmin(admin.ModelAdmin):
+#    list_display=(
+#        'reserva',
+#        '', '', '', '', '',
+#        # Campos Comunes
+#        'momento', 'remitente', 'via', 'causa','pagador', 'importe', 'created_at', 'created_by',
+#        'comentario', "is_active",
+#    )
 
 @admin.register(TipoOtroIncidencia)
 class TipoOtroIncidenciaAdmin(admin.ModelAdmin):

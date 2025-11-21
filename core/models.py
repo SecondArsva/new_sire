@@ -500,26 +500,26 @@ class TipoTransferistaPunto(models.Model):
     def __str__(self):
         return self.nombre
 
-class TipoTransferistaRazon(models.Model):
-    nombre = models.CharField(max_length=50, unique=True,)
-    """
-    Opciones:
-        - Flight change
-        - Flight delay
-        - Lost Luggage
-        - Airport Service (Passport control, Luggage pick-up)
-        - PAX Error
-        - TSF Error
-        - Unknown                         (por defecto)
-    """
-    class Meta:
-        db_table = "core_tipo_transferista_razon"
-        verbose_name = "Tipo (transferista - razón)"
-        verbose_name_plural = "Tipos (transferista - razón)"
-        ordering = ["id"]
-
-    def __str__(self):
-        return self.nombre
+#class TipoTransferistaRazon(models.Model):
+#    nombre = models.CharField(max_length=50, unique=True,)
+#    """
+#    Opciones:
+#        - Flight change
+#        - Flight delay
+#        - Lost Luggage
+#        - Airport Service (Passport control, Luggage pick-up)
+#        - PAX Error
+#        - TSF Error
+#        - Unknown                         (por defecto)
+#    """
+#    class Meta:
+#        db_table = "core_tipo_transferista_razon"
+#        verbose_name = "Tipo (transferista - razón)"
+#        verbose_name_plural = "Tipos (transferista - razón)"
+#        ordering = ["id"]
+#
+#    def __str__(self):
+#        return self.nombre
 
 class IncidenciaTransferista(IncidenciaCamposComunes):
     # Sobreescritura del padre
@@ -555,12 +555,12 @@ class IncidenciaTransferista(IncidenciaCamposComunes):
         verbose_name="Punto del viaje",
         db_index=True,
     )
-    razon = models.ForeignKey(
-        TipoTransferistaRazon,
-        on_delete=models.PROTECT,
-        verbose_name="Razón",
-        db_index=True,
-    )
+    #razon = models.ForeignKey(
+    #    TipoTransferistaRazon,
+    #    on_delete=models.PROTECT,
+    #    verbose_name="Razón",
+    #    db_index=True,
+    #)
     
     class Meta:
         db_table = "core_incidencia_transferista"
@@ -585,45 +585,45 @@ class TipoOpcionalIncidencia(models.Model):
     def __str__(self):
         return self.nombre
 
-class IncidenciaOpcional(IncidenciaCamposComunes):
-    # Sobreescritura del padre
-    reserva = models.ForeignKey(
-        Reserva,
-        on_delete=models.PROTECT,
-        related_name="incidencias_opcional",
-        verbose_name="Reserva"
-    )
-    created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
-        related_name="incidencias_opcional_creadas",
-        verbose_name="Creado por"
-    )
-
-    ciudad = models.ForeignKey(
-        Ciudad,
-        on_delete=models.PROTECT,
-        verbose_name="Ciudad",
-        related_name="incidencias_opcionales",
-    )
-    #incidencia = models.CharField(
-    #    max_length=3,
-    #    choices=Incidencia.choices,
-    #    verbose_name="Incidencia",
-    #    db_index=True,
-    #)
-    incidencia = models.ForeignKey(
-        TipoOpcionalIncidencia,
-        on_delete=models.PROTECT,
-        verbose_name="Incidencia",
-        db_index=True,
-    )
-
-    class Meta:
-        db_table = "core_incidencia_opcional"
-        verbose_name = "Incidencia (opcional)"
-        verbose_name_plural = "Incidencias (opcionales)"
-        ordering = ["-created_at"]
+#class IncidenciaOpcional(IncidenciaCamposComunes):
+#    # Sobreescritura del padre
+#    reserva = models.ForeignKey(
+#        Reserva,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_opcional",
+#        verbose_name="Reserva"
+#    )
+#    created_by = models.ForeignKey(
+#        settings.AUTH_USER_MODEL,
+#        on_delete=models.PROTECT,
+#        related_name="incidencias_opcional_creadas",
+#        verbose_name="Creado por"
+#    )
+#
+#    ciudad = models.ForeignKey(
+#        Ciudad,
+#        on_delete=models.PROTECT,
+#        verbose_name="Ciudad",
+#        related_name="incidencias_opcionales",
+#    )
+#    #incidencia = models.CharField(
+#    #    max_length=3,
+#    #    choices=Incidencia.choices,
+#    #    verbose_name="Incidencia",
+#    #    db_index=True,
+#    #)
+#    incidencia = models.ForeignKey(
+#        TipoOpcionalIncidencia,
+#        on_delete=models.PROTECT,
+#        verbose_name="Incidencia",
+#        db_index=True,
+#    )
+#
+#    class Meta:
+#        db_table = "core_incidencia_opcional"
+#        verbose_name = "Incidencia (opcional)"
+#        verbose_name_plural = "Incidencias (opcionales)"
+#        ordering = ["-created_at"]
 
 class TipoOtroIncidencia(models.Model):
     nombre = models.CharField(max_length=50, unique=True,)
@@ -746,18 +746,18 @@ class Opcional(models.Model):
     def __str__(self):
         return self.nombre
 
-class IncidenciaOpcional():
+class IncidenciaOpcional(IncidenciaCamposComunes):
     # Sobreescritura del padre
     reserva = models.ForeignKey(
         Reserva,
         on_delete=models.PROTECT,
-        related_name="incidencias_itinerario",
+        related_name="incidencias_opcional",
         verbose_name="Reserva"
     )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
-        related_name="incidencias_itinerario_creadas",
+        related_name="incidencias_opcional_creadas",
         verbose_name="Creado por",
     )
     opcional = models.ForeignKey(
@@ -766,6 +766,10 @@ class IncidenciaOpcional():
         verbose_name="Opcional",
         db_index=True,
     )
+    inc_no_realizado = models.BooleanField(default=False)
+    inc_devolucion = models.BooleanField(default=False)
+    inc_pack = models.BooleanField(default=False)
+    inc_otros = models.BooleanField(default=False)
 
     class Meta:
         db_table = "core_incidencia_opcional"

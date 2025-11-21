@@ -243,11 +243,9 @@ def incidencia_tipo(request: HttpRequest, tipo: str) -> HttpResponse:
         "transporte": (IncidenciaTransporteForm, IncidenciaTransporte, "Transporte"),
         "hotel": (IncidenciaHotelForm, IncidenciaHotel, "Hotel"),
         "transferista": (IncidenciaTransferistaForm, IncidenciaTransferista, "Transferista"),
-        "opcionales": (IncidenciaOpcionalForm, IncidenciaOpcional, "Opcionales"),
-        "otro": (IncidenciaOtroForm, IncidenciaOtro, "Otros"),
+        "opcional": (IncidenciaOpcionalForm, IncidenciaOpcional, "Opcionales"),
         "general": (IncidenciaGeneralForm, IncidenciaGeneral, "Generales"),
         "itinerario": (IncidenciaItinerarioForm, IncidenciaItinerario, "Itinerario"),
-        #"itinerario": (IncidenciaItinerarioForm, IncidenciaItinerario, "Itinerario"),
     }
     if tipo not in FORM_MAP:
         print(f"Tipo no valido: {tipo}")

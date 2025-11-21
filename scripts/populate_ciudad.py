@@ -1,10 +1,10 @@
 # scripts/populate_ciudad.py
 
-# FORMATO RAW_DATA (ciudad $ pais):
-#   Ciudad$Pais
+# FORMATO RAW_DATA (ciudad,pais):
+#   Ciudad,Pais
 #   Ejemplo:
-#       Madrid$España
-#       Nueva York$Estados Unidos
+#       Madrid,España
+#       Nueva York,Estados Unidos
 #
 # POWERSHELL:
 #   - abrir la shell:
@@ -17,23 +17,66 @@
 from django.db import transaction
 
 RAW_DATA = """
-None$None
-Madrid$España
-Barcelona$España
-Sevilla$España
-Valencia$España
-Paris$Francia
-Lyon$Francia
-Marsella$Francia
-Roma$Italia
-Milán$Italia
-Turín$Italia
+#ciudad,pais
+Madrid,España
+Sevilla,España
+Lisboa,Portugal
+Granada,España
+Berlín,Alemania
+Viena,Austria
+Barcelona,España
+París,Francia
+Atenas,Grecia
+Londres,Reino Unido
+Florencia,Italia
+Roma,Italia
+Taormina,Italia
+Venecia,Italia
+Oporto,Portugal
+Praga,Chequia
+Ámsterdam,Países Bajos
+Innsbruck,Austria
+Zúrich,Suiza
+Marrakech,Marruecos
+Erfoud,Marruecos
+Budapest,Hungría
+Cracovia,Polonia
+Estocolmo,Suecia
+Oslo,Noruega
+Estambul,Turquía
+Dublín,Irlanda
+Nápoles,Italia
+Salerno,Italia
+Albufeira,Portugal
+Capadocia,Turquía
+Marsella,Francia
+Verona,Italia
+Lucerna,Suiza
+Liverpool,Reino Unido
+Nueva York,Estados Unidos
+Quebec,Canadá
+Toronto,Canadá
+Washington,Estados Unidos
+Ginebra,Suiza
+Feldkirch,Austria
+Flagstaff,Estados Unidos
+Las Vegas,Estados Unidos
+San Francisco,Estados Unidos
+Avignon,Francia
+Toulouse,Francia
+Padua,Italia
+Manchester,Reino Unido
+Laerdal,Noruega
+None,None
+Valencia,España
+Lyon,Francia
+Milán,Italia
+Turín,Italia
 """
-
 
 @transaction.atomic
 def populate_ciudad(raw_data):
-    from core.models import Ciudad, Pais   # ajusta la app si es necesario
+    from core.models import Ciudad, Pais
 
     created = 0
     skipped = 0
@@ -43,13 +86,13 @@ def populate_ciudad(raw_data):
         if not line or line.startswith("#"):
             continue
 
-        # Dividir por el separador $
-        if "$" not in line:
-            print(f"Línea {lineno}: formato inválido → {line!r}. Esperado 'Ciudad$Pais'")
+        # Dividir por coma
+        if "," not in line:
+            print(f"Línea {lineno}: formato inválido → {line!r}. Esperado 'Ciudad,Pais'")
             skipped += 1
             continue
 
-        nombre_ciudad, nombre_pais = [p.strip() for p in line.split("$", 1)]
+        nombre_ciudad, nombre_pais = [p.strip() for p in line.split(",", 1)]
 
         if not nombre_ciudad or not nombre_pais:
             print(f"Línea {lineno}: Ciudad o País vacío → {line!r}")

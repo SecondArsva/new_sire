@@ -10,7 +10,7 @@ from .models import TipoMomento, TipoRemitente, TipoViaContacto, TipoCausa, Tipo
 from .models import IncidenciaCamposComunes
 from .models import IncidenciaGuia, IncidenciaTransferista, IncidenciaOpcional
 from .models import IncidenciaGeneral
-from .models import TipoTransferistaIncidencia, TipoTransferistaPunto, TipoTransferistaRazon
+from .models import TipoTransferistaIncidencia, TipoTransferistaPunto#, TipoTransferistaRazon
 from .models import TipoOpcionalIncidencia, TipoOtroIncidencia, IncidenciaItinerario
 from django.core.validators import RegexValidator
 
@@ -251,14 +251,14 @@ class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
         label="Punto",
         required=True,
         empty_label="---------",)
-    razon = forms.ModelChoiceField(
-        queryset=TipoTransferistaRazon.objects.none(),
-        label="Razón",
-        required=True,
-        empty_label="---------",)
+    #razon = forms.ModelChoiceField(
+    #    queryset=TipoTransferistaRazon.objects.none(),
+    #    label="Razón",
+    #    required=True,
+    #    empty_label="---------",)
 
     field_order = [
-        "ciudad", "incidencia", "punto", "razon",
+        "ciudad", "incidencia", "punto",# "razon",
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
@@ -268,15 +268,19 @@ class IncidenciaTransferistaForm(IncidenciaCamposComunesForm):
         self.fields["ciudad"].queryset = Ciudad.objects.all().order_by("nombre")
         self.fields["incidencia"].queryset = TipoTransferistaIncidencia.objects.all().order_by("id")
         self.fields["punto"].queryset = TipoTransferistaPunto.objects.all().order_by("id")
-        self.fields["razon"].queryset = TipoTransferistaRazon.objects.all().order_by("id")
+        #self.fields["razon"].queryset = TipoTransferistaRazon.objects.all().order_by("id")
 
 class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     opcional = forms.ModelChoiceField(
         queryset=Opcional.objects.none(),
-        label="Ciudad",
+        label="Opcional",
         required=True,
         empty_label="Selecciona una ciudad",)
     
+    inc_no_realizado = forms.BooleanField(label="NO_REALIZADO", required=False, initial=False)
+    inc_devolucion = forms.BooleanField(label="DEVOLUCIÓN", required=False, initial=False)
+    inc_pack = forms.BooleanField(label="GUÍA_LOCAL/BUS/PROVEEDOR", required=False, initial=False)
+    inc_otros = forms.BooleanField(label="ROOM", required=False, initial=False)
     #incidencia = forms.ModelChoiceField(
     #    label="Incidencia",
     #    queryset=TipoOpcionalIncidencia.objects.none(),
@@ -285,7 +289,7 @@ class IncidenciaOpcionalForm(IncidenciaCamposComunesForm):
     #)
 
     field_order = [
-        "opcional",
+        "opcional", "inc_no_realizado", "inc_devolucion", "inc_pack", "inc_otros", 
         # Campos Comunes
         "momento", "remitente", "via", "causa", "pagador", "importe", "comentario",
     ]
